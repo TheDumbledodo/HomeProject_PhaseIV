@@ -21,7 +21,8 @@ import java.util.Objects;
 public abstract class BaseEntity<ID extends Serializable> {
 
 	@Id
-	@GenericGenerator(name = "sequenceGen",
+	@GenericGenerator(
+			name = "sequenceGen",
 			strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
 			parameters = {
 					@Parameter(name = "sequence_name", value = "SEQUENCE")

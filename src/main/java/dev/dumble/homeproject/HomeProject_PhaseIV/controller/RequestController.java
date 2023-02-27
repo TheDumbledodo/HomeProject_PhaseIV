@@ -1,98 +1,98 @@
 package dev.dumble.homeproject.HomeProject_PhaseIV.controller;
 
+import dev.dumble.homeproject.HomeProject_PhaseIV.dto.CardDTO;
+import dev.dumble.homeproject.HomeProject_PhaseIV.dto.RequestDTO;
+import dev.dumble.homeproject.HomeProject_PhaseIV.dto.ReviewDTO;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.transactions.Request;
-import dev.dumble.homeproject.HomeProject_PhaseIV.mapper.CardDTO;
-import dev.dumble.homeproject.HomeProject_PhaseIV.mapper.RequestDTO;
-import dev.dumble.homeproject.HomeProject_PhaseIV.mapper.ReviewDTO;
-import dev.dumble.homeproject.HomeProject_PhaseIV.service.*;
+import dev.dumble.homeproject.HomeProject_PhaseIV.mappers.RequestMapper;
+import dev.dumble.homeproject.HomeProject_PhaseIV.mappers.ReviewMapper;
+import dev.dumble.homeproject.HomeProject_PhaseIV.service.impl.*;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
-@RestController
+@Slf4j @RestController
 @AllArgsConstructor
-@RequestMapping("/api/request")
+@RequestMapping("/api/v1/request")
 public class RequestController {
 
 	private RequestService requestService;
 	private OfferService offerService;
 	private AssistanceService assistanceService;
-	private CaptchaService captchaService;
 	private ClientService clientService;
+	private CaptchaService captchaService;
 
 	@PostMapping("/create")
-	public ResponseEntity<Request> createRequest(@RequestBody RequestDTO requestDTO) {
-		var request = requestDTO.toRequest();
+	public ResponseEntity<Request> createRequest(@RequestBody @Valid RequestDTO requestDTO) {
+		var request = RequestMapper.getInstance().map(requestDTO);
+
 		var assistance = assistanceService.findById(requestDTO.getAssistanceId());
 		var client = clientService.findById(requestDTO.getClientId());
 
-		var optionalRequest = Optional.ofNullable(requestService.create(request, assistance, client));
+		requestService.create(request, assistance, client);
 
-		return ResponseEntity.of(optionalRequest);
+		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
-	@PostMapping("/accept-offer")
-	public ResponseEntity<Request> acceptRequestOffer(@RequestParam(value = "offer_id") Long offerId,
-													  @RequestParam(value = "request_id") Long requestId) {
-		var databaseOffer = offerService.findById(offerId);
+	@PostMapping("/{id}/accept-offer")
+	public ResponseEntity<Request> acceptRequestOffer(@PathVariable(name = "id") Long requestId,
+													  @RequestParam(value = "offer_id") Long offerId) {
 		var databaseRequest = requestService.findById(requestId);
-
-		var request = offerService.acceptOffer(databaseRequest, databaseOffer);
-		var optionalRequest = Optional.of(request);
-
-		return ResponseEntity.of(optionalRequest);
-	}
-
-	@PostMapping("/start-request")
-	public ResponseEntity<Request> startRequest(@RequestParam(value = "offer_id") Long offerId,
-												@RequestParam(value = "request_id") Long requestId) {
 		var databaseOffer = offerService.findById(offerId);
-		var databaseRequest = requestService.findById(requestId);
 
-		var request = requestService.confirmRequestStarted(databaseRequest, databaseOffer);
-		var optionalRequest = Optional.of(request);
+		offerService.acceptOffer(databaseRequest, databaseOffer);
 
-		return ResponseEntity.of(optionalRequest);
+		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
-	@PostMapping("/finish-request")
-	public ResponseEntity<Request> finishRequest(@RequestParam(value = "request_id") Long requestId) {
+	@PostMapping("/{id}/start-request")
+	public ResponseEntity<Request> startRequest(@PathVariable(name = "id") Long requestId,
+												@RequestParam(value = "offer_id") Long offerId) {
+		var databaseRequest = requestService.findById(requestId);
+		var databaseOffer = offerService.findById(offerId);
+
+		requestService.startRequest(databaseRequest);
+
+		return ResponseEntity.status(HttpStatus.OK).build();
+	}
+
+	@PostMapping("/{id}/finish-request")
+	public ResponseEntity<Request> finishRequest(@PathVariable(name = "id") Long requestId) {
 		var request = requestService.findById(requestId);
 
-		var databaseRequest = requestService.finishRequest(request);
-		var optionalRequest = Optional.of(databaseRequest);
+		requestService.finishRequest(request);
 
-		return ResponseEntity.of(optionalRequest);
+		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
-	@PostMapping("/credit-payment")
-	public ResponseEntity<Request> creditPaymentForRequest(@RequestBody ReviewDTO reviewDTO,
-														   @RequestParam(value = "request_id") Long requestId,
+	@PostMapping("/{id}/credit-payment")
+	public ResponseEntity<Request> creditPaymentForRequest(@RequestBody @Valid ReviewDTO reviewDTO,
+														   @PathVariable(name = "id") Long requestId,
 														   @RequestParam(value = "client_id") Long clientId) {
+		var review = ReviewMapper.getInstance().map(reviewDTO);
+
 		var request = requestService.findById(requestId);
 		var client = clientService.findById(clientId);
-		var review = reviewDTO.toReview();
 
-		var databaseRequest = requestService.payByCredit(request, client, review);
-		var optionalRequest = Optional.of(databaseRequest);
+		requestService.paySpecialist(request, client, review);
 
-		return ResponseEntity.of(optionalRequest);
+		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
-	@PostMapping("/online-payment")
-	public ResponseEntity<Request> onlinePaymentForRequest(@RequestBody final CardDTO cardDTO,
-														   @RequestParam(value = "request_id") Long requestId,
+	@PostMapping("/{id}/online-payment")
+	public ResponseEntity<Request> onlinePaymentForRequest(@RequestBody @Valid CardDTO cardDTO,
+														   @PathVariable(name = "id") Long requestId,
 														   @RequestParam(value = "client_id") Long clientId) {
 		captchaService.validateCaptcha(cardDTO.getCaptchaResponse());
 
 		var request = requestService.findById(requestId);
 		var client = clientService.findById(clientId);
 
-		var databaseRequest = requestService.payOnline(request, client);
-		var optionalRequest = Optional.of(databaseRequest);
+		requestService.paySpecialist(request, client);
 
-		return ResponseEntity.of(optionalRequest);
+		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 }

@@ -7,6 +7,6 @@ public class InsufficientFundsException extends Error {
 	}
 
 	public InsufficientFundsException() {
-		super("You didn't enter enough money for this request.");
+		this("You didn't enter enough money for this action.");
 	}
 }

@@ -1,4 +1,4 @@
-package dev.dumble.homeproject.HomeProject_PhaseIV.service;
+package dev.dumble.homeproject.HomeProject_PhaseIV.service.impl;
 
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.CaptchaResponse;
 import dev.dumble.homeproject.HomeProject_PhaseIV.exception.impl.InvalidCaptchaException;
@@ -17,7 +17,7 @@ public class CaptchaService {
 	@Value("${google.recaptcha.verification.endpoint}") String recaptchaEndpoint;
 	@Value("${google.recaptcha.secret}") String recaptchaSecret;
 
-	public CaptchaService(final RestTemplateBuilder templateBuilder) {
+	public CaptchaService(RestTemplateBuilder templateBuilder) {
 		this.template = templateBuilder.build();
 	}
 

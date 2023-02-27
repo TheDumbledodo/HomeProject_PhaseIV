@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.Transaction;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.members.Specialist;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,13 +27,18 @@ public class Offer extends Transaction {
 	@JsonIgnore @ManyToOne
 	private Request request;
 
+	@NotNull @Column(nullable = false)
 	@Temporal(value = TemporalType.TIMESTAMP)
 	private LocalDateTime creationTime;
 
+	@NotNull @Column(nullable = false)
 	@Temporal(value = TemporalType.TIMESTAMP)
 	private LocalDateTime startTime;
 
+	@NotNull @Column(nullable = false)
 	private Integer practicalDays;
+
+	@NotNull @Column(nullable = false)
 	private Long offeredPrice;
 
 	@Override
@@ -43,10 +49,5 @@ public class Offer extends Transaction {
 				offer.getOfferedPrice().equals(this.getOfferedPrice()) &&
 				offer.getPracticalDays().equals(this.getPracticalDays()) &&
 				offer.getStartTime().equals(this.getStartTime());
-	}
-
-	@Override
-	public int hashCode() {
-		return super.hashCode();
 	}
 }

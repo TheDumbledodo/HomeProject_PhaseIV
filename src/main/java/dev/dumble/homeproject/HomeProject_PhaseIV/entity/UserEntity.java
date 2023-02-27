@@ -1,5 +1,6 @@
 package dev.dumble.homeproject.HomeProject_PhaseIV.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
@@ -28,13 +29,10 @@ public abstract class UserEntity extends BaseEntity<Long> {
 	@Column(unique = true)
 	private String emailAddress;
 
+	@JsonIgnore
 	private String password;
 
-	private String username;
-
-	private String firstName;
-
-	private String lastName;
+	private String username, firstName, lastName;
 
 	private Long credit;
 }

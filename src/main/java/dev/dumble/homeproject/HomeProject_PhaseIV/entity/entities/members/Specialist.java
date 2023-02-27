@@ -6,8 +6,10 @@ import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.services.Assis
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.transactions.Offer;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.transactions.Review;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.enums.SpecialistStatus;
+import dev.dumble.homeproject.HomeProject_PhaseIV.exception.impl.ImproperProfilePictureException;
 import dev.dumble.homeproject.HomeProject_PhaseIV.utils.FileUtils;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,25 +29,50 @@ public class Specialist extends UserEntity {
 	@ManyToMany(cascade = CascadeType.ALL, mappedBy = "specialistList", fetch = FetchType.EAGER)
 	private Set<Assistance> assistanceList;
 
+	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "specialist", fetch = FetchType.EAGER)
 	private List<Offer> offers;
 
+	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "specialist", fetch = FetchType.EAGER)
 	private List<Review> reviews;
 
-	private long rating;
+	@NotNull @JsonIgnore
 	private byte[] profilePicture;
+
+	private long rating;
 
 	@Enumerated(value = EnumType.STRING)
 	private SpecialistStatus status;
 
-	@Column(length = 16000000)
+	@JsonIgnore
+	@Column(nullable = false, length = 16000000)
 	public byte[] getData() {
 		return profilePicture;
 	}
 
+	public boolean containsAssistance(Assistance assistance) {
+		return this.assistanceList.contains(assistance);
+	}
+
+	public boolean isDisabled() {
+		return this.getStatus() != SpecialistStatus.ACCEPTED;
+	}
+
 	public void setProfilePicture(MultipartFile file) {
-		this.profilePicture = FileUtils.convertImageToBytes(file);
+		var picture = FileUtils.convertImageToBytes(file);
+		if (picture == null)
+			throw new ImproperProfilePictureException();
+
+		this.profilePicture = picture;
+	}
+
+	public void addRating(int rating) {
+		this.rating += rating;
+	}
+
+	public void reduceRating(int rating) {
+		this.rating -= rating;
 	}
 
 	public void addAssistance(Assistance assistance) {
@@ -56,13 +83,5 @@ public class Specialist extends UserEntity {
 	public void removeAssistance(Assistance assistance) {
 		this.assistanceList.remove(assistance);
 		assistance.getSpecialistList().remove(this);
-	}
-
-	public void addRating(int rating) {
-		this.rating += rating;
-	}
-
-	public void reduceRating(int rating) {
-		this.rating -= rating;
 	}
 }

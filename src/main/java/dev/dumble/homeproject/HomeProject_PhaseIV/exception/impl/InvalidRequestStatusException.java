@@ -2,7 +2,11 @@ package dev.dumble.homeproject.HomeProject_PhaseIV.exception.impl;
 
 public class InvalidRequestStatusException extends Error {
 
+	public InvalidRequestStatusException(String message) {
+		super(message);
+	}
+
 	public InvalidRequestStatusException() {
-		super("The requests status should be awaiting \nselection/suggestion for you to offer a deal.");
+		this("The requests status must be awaiting selection/suggestion to offer a deal.");
 	}
 }

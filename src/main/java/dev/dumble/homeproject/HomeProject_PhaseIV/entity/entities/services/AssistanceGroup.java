@@ -3,6 +3,7 @@ package dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.services;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.Builder.Default;
 import lombok.experimental.SuperBuilder;
@@ -17,10 +18,10 @@ import java.util.List;
 @SuperBuilder(setterPrefix = "set")
 public class AssistanceGroup extends BaseEntity<Long> {
 
-	@JsonIgnore
+	@Default @JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "group")
-	@Default private List<Assistance> assistanceList = new ArrayList<>();
+	private List<Assistance> assistanceList = new ArrayList<>();
 
-	@Column(unique = true)
+	@NotNull @Column(unique = true, nullable = false)
 	private String name;
 }

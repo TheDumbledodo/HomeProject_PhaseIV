@@ -7,6 +7,6 @@ public class InvalidCaptchaException extends Error {
 	}
 
 	public InvalidCaptchaException() {
-		super("The captcha hasn't been solved yet.");
+		this("The captcha hasn't been solved yet.");
 	}
 }
