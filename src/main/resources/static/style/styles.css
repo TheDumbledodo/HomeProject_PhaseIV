@@ -1,0 +1,20 @@
+.background {
+    background-image: url("../images/background.png");
+    height: 500px;
+    position: sticky;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.container {
+    margin-top: 200px;
+}
+
+.submit-button {
+    margin-top: 40px;
+}
+
+.g-recaptcha {
+    margin-left: 30px;
+}
