@@ -1,8 +1,8 @@
 package dev.dumble.homeproject.HomeProject_PhaseIV.controller;
 
 import dev.dumble.homeproject.HomeProject_PhaseIV.dto.ChangePasswordDTO;
+import dev.dumble.homeproject.HomeProject_PhaseIV.dto.StatusDTO;
 import dev.dumble.homeproject.HomeProject_PhaseIV.dto.UserDTO;
-import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.members.Client;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.members.Specialist;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.transactions.Request;
 import dev.dumble.homeproject.HomeProject_PhaseIV.mappers.SpecialistMapper;
@@ -52,12 +52,22 @@ public class SpecialistController {
 	}
 
 	@PostMapping("/confirm-account")
-	public ResponseEntity<Client> confirmSpecialistAccount(@RequestParam(value = "token") @NonNull @NotBlank String token) {
+	public ResponseEntity<String> confirmSpecialistAccount(@RequestParam(value = "token") @NonNull @NotBlank String token) {
 		var specialist = (Specialist) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 		tokenService.confirmToken(specialist, token);
 
-		return ResponseEntity.status(HttpStatus.OK).build();
+		return ResponseEntity.ok("Your account has been verified!");
+	}
+
+	@GetMapping("/all-requests")
+	public ResponseEntity<Set<Request>> findSpecialistRequests(@RequestBody @Valid StatusDTO status) {
+		var specialist = (Specialist) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+		var requests = requestService.findSpecialistRequests(specialist, status.getStatus());
+		var optionalRequests = Optional.ofNullable(requests);
+
+		return ResponseEntity.of(optionalRequests);
 	}
 
 	@GetMapping("/matching-requests")

@@ -1,6 +1,7 @@
 package dev.dumble.homeproject.HomeProject_PhaseIV.controller;
 
 import dev.dumble.homeproject.HomeProject_PhaseIV.dto.ChangePasswordDTO;
+import dev.dumble.homeproject.HomeProject_PhaseIV.dto.StatusDTO;
 import dev.dumble.homeproject.HomeProject_PhaseIV.dto.UserDTO;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.members.Client;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.transactions.Request;
@@ -48,20 +49,28 @@ public class ClientController {
 	}
 
 	@PostMapping("/confirm-account")
-	public ResponseEntity<Client> confirmClientAccount(@RequestParam(value = "token") @NonNull @NotBlank String token) {
+	public ResponseEntity<String> confirmClientAccount(@RequestParam(value = "token") @NonNull @NotBlank String token) {
 		var client = (Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		tokenService.confirmToken(client, token);
 
-		return ResponseEntity.status(HttpStatus.OK).build();
+		return ResponseEntity.ok("Your account has been verified!");
 	}
 
-	// todo: clean this code change to enum or specification
-	@GetMapping("/find-requests")
-	public ResponseEntity<Set<Request>> findClientRequests(@RequestParam(value = "request_status") @NonNull @NotBlank String status) {
+	@GetMapping("/all-requests")
+	public ResponseEntity<Set<Request>> findClientRequests(@RequestBody @Valid StatusDTO status) {
 		var client = (Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		var requests = requestService.findClientRequests(client, status);
+
+		var requests = requestService.findClientRequests(client, status.getStatus());
 		var optionalRequests = Optional.ofNullable(requests);
 
 		return ResponseEntity.of(optionalRequests);
+	}
+
+	@GetMapping("/credit")
+	public ResponseEntity<Long> findClientCredit() {
+		var client = (Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		var optionalRating = Optional.of(client.getCredit());
+
+		return ResponseEntity.of(optionalRating);
 	}
 }

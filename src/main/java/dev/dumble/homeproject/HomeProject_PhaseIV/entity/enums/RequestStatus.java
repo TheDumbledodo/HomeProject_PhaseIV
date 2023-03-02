@@ -14,13 +14,4 @@ public enum RequestStatus {
 	PAID("پرداخت شده");
 
 	private final String name;
-
-	public static RequestStatus from(String name) {
-		name = name.toUpperCase();
-
-		for (var value : RequestStatus.values())
-			if (value.name().equalsIgnoreCase(name)) return value;
-
-		throw new IllegalArgumentException("The enumeration [%s] you provided was wrong.".formatted(name));
-	}
 }

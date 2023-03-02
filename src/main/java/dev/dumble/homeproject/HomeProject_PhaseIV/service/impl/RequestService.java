@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class RequestService extends GenericService<Long, IRequestRepository, Request> {
@@ -128,9 +129,15 @@ public class RequestService extends GenericService<Long, IRequestRepository, Req
 		return super.getRepository().findMatchingRequests(specialist.getAssistanceList());
 	}
 
-	public Set<Request> findClientRequests(Client client, String status) {
-		var requestStatus = RequestStatus.from(status);
-
+	public Set<Request> findClientRequests(Client client, RequestStatus requestStatus) {
 		return super.getRepository().findClientRequests(requestStatus, client.getId());
+	}
+
+	// todo: improve this somehow
+	public Set<Request> findSpecialistRequests(Specialist specialist, RequestStatus requestStatus) {
+		return specialist.getOffers().stream()
+				.map(Offer::getRequest)
+				.filter(request -> request.getStatus() == requestStatus)
+				.collect(Collectors.toSet());
 	}
 }
