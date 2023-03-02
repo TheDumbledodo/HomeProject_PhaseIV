@@ -27,10 +27,4 @@ public class OfferDTO {
 
 	@NotNull @Min(value = 1, message = "The price you offered doesn't match the requirements.")
 	private Long offeredPrice;
-
-	@NotNull @Min(value = 1)
-	private Long specialistId;
-
-	@NotNull @Min(value = 1)
-	private Long requestId;
 }

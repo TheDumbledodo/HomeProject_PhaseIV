@@ -1,5 +1,6 @@
 package dev.dumble.homeproject.HomeProject_PhaseIV.service.impl;
 
+import dev.dumble.homeproject.HomeProject_PhaseIV.dto.ChangePasswordDTO;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.members.Specialist;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.services.Assistance;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.enums.SpecialistStatus;
@@ -10,16 +11,21 @@ import dev.dumble.homeproject.HomeProject_PhaseIV.exception.impl.NotPermittedExc
 import dev.dumble.homeproject.HomeProject_PhaseIV.repository.ISpecialistRepository;
 import dev.dumble.homeproject.HomeProject_PhaseIV.service.GenericService;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SpecialistService extends GenericService<Long, ISpecialistRepository, Specialist> {
 
-	public SpecialistService(ISpecialistRepository repository) {
+	private final BCryptPasswordEncoder passwordEncoder;
+
+	public SpecialistService(ISpecialistRepository repository, BCryptPasswordEncoder passwordEncoder) {
 		super(repository);
+		this.passwordEncoder = passwordEncoder;
 	}
 
 	@Override
@@ -29,29 +35,31 @@ public class SpecialistService extends GenericService<Long, ISpecialistRepositor
 				.isPresent())
 			throw new DuplicateEntityException("The email you provided already exists.");
 
+		specialist.setPassword(passwordEncoder.encode(specialist.getPassword()));
 		specialist.setRegisteredTime(LocalDateTime.now());
-		specialist.setUserRole(UserRole.SPECIALIST);
-		specialist.setStatus(SpecialistStatus.DISABLED);
+		specialist.setUserRole(UserRole.ROLE_SPECIALIST);
+		specialist.setStatus(SpecialistStatus.RECENT);
 
 		return super.getRepository().save(specialist);
 	}
 
-	public Specialist login(String username, String password) {
-		return super.getRepository()
-				.findSpecialistByUsernameAndPassword(username, password)
-				.orElseThrow(() -> new InvalidEntityException("These entered login credentials are wrong!"));
+	public Optional<Specialist> findByName(String username) {
+		return super.getRepository().findSpecialistByUsername(username);
 	}
 
-	public void changePassword(Specialist specialist, String password) {
-		if (specialist.isDisabled())
+	public void changePassword(Specialist specialist, ChangePasswordDTO passwordDTO) {
+		if (specialist.isNotAccepted())
 			throw new NotPermittedException("The specialist hasn't been accepted yet.");
 
-		specialist.setPassword(password);
-		this.update(specialist);
+		if (!passwordEncoder.matches(passwordDTO.getOldPassword(), specialist.getPassword()))
+			throw new NotPermittedException("The password you entered doesn't match your current password.");
+
+		specialist.setPassword(passwordEncoder.encode(passwordDTO.getNewPassword()));
+		super.update(specialist);
 	}
 
 	public void addAssistance(Specialist specialist, Assistance assistance) {
-		if (specialist.isDisabled())
+		if (specialist.isNotAccepted())
 			throw new NotPermittedException("The specialist hasn't been accepted yet.");
 
 		if (specialist.containsAssistance(assistance))
@@ -62,7 +70,7 @@ public class SpecialistService extends GenericService<Long, ISpecialistRepositor
 	}
 
 	public void removeAssistance(Specialist specialist, Assistance assistance) {
-		if (specialist.isDisabled())
+		if (specialist.isNotAccepted())
 			throw new NotPermittedException("The specialist hasn't been accepted yet.");
 
 		if (!specialist.containsAssistance(assistance))

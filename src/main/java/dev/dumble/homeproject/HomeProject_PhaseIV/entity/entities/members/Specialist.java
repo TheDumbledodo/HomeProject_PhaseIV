@@ -55,7 +55,13 @@ public class Specialist extends UserEntity {
 		return this.assistanceList.contains(assistance);
 	}
 
-	public boolean isDisabled() {
+	@Override
+	public boolean isEnabled() {
+		return this.getStatus() != SpecialistStatus.DISABLED;
+	}
+
+	@JsonIgnore
+	public boolean isNotAccepted() {
 		return this.getStatus() != SpecialistStatus.ACCEPTED;
 	}
 

@@ -51,7 +51,7 @@ $(document).ready(function () {
                 dataType: "json",
                 data: JSON.stringify(request),
                 async: false,
-                url: "http://localhost:8081/api/v1/request/online-payment?request_id=152&client_id=1",
+                url: "http://localhost:8081/api/v1/request/152/online-payment",
                 success: function () {
                     alert("Your payment has been confirmed!");
                 },

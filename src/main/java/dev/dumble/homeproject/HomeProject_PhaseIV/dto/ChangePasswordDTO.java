@@ -11,13 +11,7 @@ import lombok.Setter;
 @Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginDTO {
-
-	@NotNull @NotBlank
-	@Pattern(
-			regexp = "^\\S{4,20}$",
-			message = "The username you entered isn't valid.")
-	private String username;
+public class ChangePasswordDTO {
 
 	@NotNull @NotBlank @Pattern(
 			regexp = "(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}",
@@ -25,5 +19,13 @@ public class LoginDTO {
 					The password must contain at least 8
 					characters containing an uppercase, a lowercase.
 					""")
-	private String password;
+	private String newPassword;
+
+	@NotNull @NotBlank @Pattern(
+			regexp = "(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}",
+			message = """
+					The password must contain at least 8
+					characters containing an uppercase, a lowercase.
+					""")
+	private String oldPassword;
 }

@@ -9,10 +9,24 @@ import lombok.Setter;
 @Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDTO extends LoginDTO {
+public class UserDTO {
 
 	@NotNull @NotBlank @Email(message = "The email address you provided isn't valid.")
 	private String emailAddress;
+
+	@NotNull @NotBlank
+	@Pattern(
+			regexp = "^\\S{4,20}$",
+			message = "The username you entered isn't valid.")
+	private String username;
+
+	@NotNull @NotBlank @Pattern(
+			regexp = "(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}",
+			message = """
+					The password must contain at least 8
+					characters containing an uppercase, a lowercase.
+					""")
+	private String password;
 
 	@NotNull @NotBlank
 	@Size(

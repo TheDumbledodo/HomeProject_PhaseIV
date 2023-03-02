@@ -3,15 +3,20 @@ package dev.dumble.homeproject.HomeProject_PhaseIV.controller;
 import dev.dumble.homeproject.HomeProject_PhaseIV.dto.CardDTO;
 import dev.dumble.homeproject.HomeProject_PhaseIV.dto.RequestDTO;
 import dev.dumble.homeproject.HomeProject_PhaseIV.dto.ReviewDTO;
+import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.members.Client;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.transactions.Request;
 import dev.dumble.homeproject.HomeProject_PhaseIV.mappers.RequestMapper;
 import dev.dumble.homeproject.HomeProject_PhaseIV.mappers.ReviewMapper;
-import dev.dumble.homeproject.HomeProject_PhaseIV.service.impl.*;
+import dev.dumble.homeproject.HomeProject_PhaseIV.service.impl.AssistanceService;
+import dev.dumble.homeproject.HomeProject_PhaseIV.service.impl.CaptchaService;
+import dev.dumble.homeproject.HomeProject_PhaseIV.service.impl.OfferService;
+import dev.dumble.homeproject.HomeProject_PhaseIV.service.impl.RequestService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j @RestController
@@ -22,15 +27,15 @@ public class RequestController {
 	private RequestService requestService;
 	private OfferService offerService;
 	private AssistanceService assistanceService;
-	private ClientService clientService;
 	private CaptchaService captchaService;
 
 	@PostMapping("/create")
-	public ResponseEntity<Request> createRequest(@RequestBody @Valid RequestDTO requestDTO) {
+	public ResponseEntity<Request> createRequest(@RequestBody @Valid RequestDTO requestDTO,
+												 @RequestParam(value = "assistance_id") Long assistanceId) {
 		var request = RequestMapper.getInstance().map(requestDTO);
 
-		var assistance = assistanceService.findById(requestDTO.getAssistanceId());
-		var client = clientService.findById(requestDTO.getClientId());
+		var assistance = assistanceService.findById(assistanceId);
+		var client = (Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 		requestService.create(request, assistance, client);
 
@@ -49,10 +54,8 @@ public class RequestController {
 	}
 
 	@PostMapping("/{id}/start-request")
-	public ResponseEntity<Request> startRequest(@PathVariable(name = "id") Long requestId,
-												@RequestParam(value = "offer_id") Long offerId) {
+	public ResponseEntity<Request> startRequest(@PathVariable(name = "id") Long requestId) {
 		var databaseRequest = requestService.findById(requestId);
-		var databaseOffer = offerService.findById(offerId);
 
 		requestService.startRequest(databaseRequest);
 
@@ -70,12 +73,11 @@ public class RequestController {
 
 	@PostMapping("/{id}/credit-payment")
 	public ResponseEntity<Request> creditPaymentForRequest(@RequestBody @Valid ReviewDTO reviewDTO,
-														   @PathVariable(name = "id") Long requestId,
-														   @RequestParam(value = "client_id") Long clientId) {
+														   @PathVariable(name = "id") Long requestId) {
 		var review = ReviewMapper.getInstance().map(reviewDTO);
 
 		var request = requestService.findById(requestId);
-		var client = clientService.findById(clientId);
+		var client = (Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 		requestService.paySpecialist(request, client, review);
 
@@ -84,12 +86,11 @@ public class RequestController {
 
 	@PostMapping("/{id}/online-payment")
 	public ResponseEntity<Request> onlinePaymentForRequest(@RequestBody @Valid CardDTO cardDTO,
-														   @PathVariable(name = "id") Long requestId,
-														   @RequestParam(value = "client_id") Long clientId) {
+														   @PathVariable(name = "id") Long requestId) {
 		captchaService.validateCaptcha(cardDTO.getCaptchaResponse());
 
 		var request = requestService.findById(requestId);
-		var client = clientService.findById(clientId);
+		var client = (Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 		requestService.paySpecialist(request, client);
 

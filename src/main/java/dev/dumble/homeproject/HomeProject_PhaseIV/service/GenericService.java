@@ -13,6 +13,7 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
+@SuppressWarnings("unused")
 public abstract class GenericService<S extends Serializable, R extends JpaRepository<E, S>, E extends BaseEntity<S>> {
 
 	private R repository;
@@ -45,11 +46,11 @@ public abstract class GenericService<S extends Serializable, R extends JpaReposi
 		return repository.findById(id).orElseThrow(InvalidEntityException::new);
 	}
 
-	public E update(E entity) {
+	public void update(E entity) {
 		var id = entity.getId();
 		if (id == null || repository.findById(id).isEmpty())
 			throw new InvalidEntityException();
 
-		return repository.save(entity);
+		repository.save(entity);
 	}
 }

@@ -6,11 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum UserRole {
-	MANAGER("مدیر", 2),
-	SPECIALIST("متخصص", 1),
-	CLIENT("مشتری", 0);
-
-	private final String name;
-
-	private final int code;
+	ROLE_MANAGER,
+	ROLE_SPECIALIST,
+	ROLE_CLIENT
 }

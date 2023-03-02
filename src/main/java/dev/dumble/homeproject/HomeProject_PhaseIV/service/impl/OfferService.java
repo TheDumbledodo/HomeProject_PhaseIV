@@ -25,7 +25,7 @@ public class OfferService extends GenericService<Long, IOfferRepository, Offer> 
 	}
 
 	public Offer create(Offer offer, Request request, Specialist specialist) {
-		if (specialist.isDisabled())
+		if (specialist.isNotAccepted())
 			throw new NotPermittedException("The specialist hasn't been accepted yet.");
 
 		var status = request.getStatus();

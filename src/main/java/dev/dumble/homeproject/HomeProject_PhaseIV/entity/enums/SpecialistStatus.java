@@ -6,7 +6,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum SpecialistStatus {
-	DISABLED("جدید"),
+	DISABLED("غیر فعال"),
+	RECENT("جدید"),
 	PENDING_CONFIRMATION("در انتظار تایید"),
 	ACCEPTED("تایید شده");
 
