@@ -1,4 +1,4 @@
-package dev.dumble.homeproject.HomeProject_PhaseIV.mappers;
+package dev.dumble.homeproject.HomeProject_PhaseIV.mapper;
 
 import dev.dumble.homeproject.HomeProject_PhaseIV.dto.RequestDTO;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.transactions.Request;

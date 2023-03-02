@@ -39,12 +39,10 @@ public abstract class UserEntity extends BaseEntity<Long> implements UserDetails
 	@Column(unique = true)
 	private String emailAddress;
 
-	@JsonIgnore
-	@Column(length = 60)
+	@Column(length = 60) @JsonIgnore
 	private String password;
 
 	private String username, firstName, lastName;
-
 	private Long credit;
 
 	private boolean enabled;

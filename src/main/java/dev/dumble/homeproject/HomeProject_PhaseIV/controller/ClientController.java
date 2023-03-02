@@ -5,7 +5,7 @@ import dev.dumble.homeproject.HomeProject_PhaseIV.dto.StatusDTO;
 import dev.dumble.homeproject.HomeProject_PhaseIV.dto.UserDTO;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.transactions.Request;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.users.Client;
-import dev.dumble.homeproject.HomeProject_PhaseIV.mappers.ClientMapper;
+import dev.dumble.homeproject.HomeProject_PhaseIV.mapper.ClientMapper;
 import dev.dumble.homeproject.HomeProject_PhaseIV.service.impl.ClientService;
 import dev.dumble.homeproject.HomeProject_PhaseIV.service.impl.ConfirmationTokenService;
 import dev.dumble.homeproject.HomeProject_PhaseIV.service.impl.RequestService;

@@ -6,20 +6,20 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @UtilityClass
-public class FileUtils {
+public class FileUtility {
 
 	private final String JPG_PATTERN = "\\S+\\.jpg";
 
 	private boolean checkIfJpeg(MultipartFile file) {
 		var name = file.getOriginalFilename();
-		
+
 		return name != null && !name.isBlank() && name.matches(JPG_PATTERN);
 	}
 
 	public byte[] convertImageToBytes(MultipartFile multipartFile) {
 		try {
 			if (multipartFile == null) return null;
-			if (!FileUtils.checkIfJpeg(multipartFile)) return null;
+			if (!FileUtility.checkIfJpeg(multipartFile)) return null;
 
 			return multipartFile.getBytes();
 

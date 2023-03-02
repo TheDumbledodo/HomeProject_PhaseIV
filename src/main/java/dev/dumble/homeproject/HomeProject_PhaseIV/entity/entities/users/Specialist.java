@@ -7,7 +7,7 @@ import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.transactions.O
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.transactions.Review;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.enums.SpecialistStatus;
 import dev.dumble.homeproject.HomeProject_PhaseIV.exception.impl.ImproperProfilePictureException;
-import dev.dumble.homeproject.HomeProject_PhaseIV.utils.FileUtils;
+import dev.dumble.homeproject.HomeProject_PhaseIV.utils.FileUtility;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -54,7 +54,7 @@ public class Specialist extends UserEntity {
 	private long rating;
 
 	public void setProfilePicture(MultipartFile file) {
-		var picture = FileUtils.convertImageToBytes(file);
+		var picture = FileUtility.convertImageToBytes(file);
 		if (picture == null)
 			throw new ImproperProfilePictureException();
 

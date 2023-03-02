@@ -8,7 +8,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +18,6 @@ import java.util.Objects;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class SearchRequest implements Serializable {
-
-	@Serial
-	private static final long serialVersionUID = 8514625832019794838L;
 
 	private List<FilterRequest> filters;
 	private List<SortRequest> sorts;

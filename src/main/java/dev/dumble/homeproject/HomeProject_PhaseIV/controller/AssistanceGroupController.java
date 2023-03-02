@@ -2,7 +2,7 @@ package dev.dumble.homeproject.HomeProject_PhaseIV.controller;
 
 import dev.dumble.homeproject.HomeProject_PhaseIV.dto.AssistanceGroupDTO;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.AssistanceGroup;
-import dev.dumble.homeproject.HomeProject_PhaseIV.mappers.AssistanceGroupMapper;
+import dev.dumble.homeproject.HomeProject_PhaseIV.mapper.AssistanceGroupMapper;
 import dev.dumble.homeproject.HomeProject_PhaseIV.service.impl.AssistanceGroupService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;

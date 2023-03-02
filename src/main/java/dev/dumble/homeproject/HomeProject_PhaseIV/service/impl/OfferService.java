@@ -5,9 +5,9 @@ import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.transactions.R
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.users.Specialist;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.enums.RequestStatus;
 import dev.dumble.homeproject.HomeProject_PhaseIV.exception.impl.*;
+import dev.dumble.homeproject.HomeProject_PhaseIV.filter.enums.RequestSorter;
 import dev.dumble.homeproject.HomeProject_PhaseIV.repository.IOfferRepository;
 import dev.dumble.homeproject.HomeProject_PhaseIV.service.GenericService;
-import dev.dumble.homeproject.HomeProject_PhaseIV.utils.enums.RequestSorter;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

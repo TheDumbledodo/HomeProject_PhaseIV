@@ -6,7 +6,7 @@ import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.users.Client;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.users.Manager;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.users.Specialist;
 import dev.dumble.homeproject.HomeProject_PhaseIV.filter.request.SearchRequest;
-import dev.dumble.homeproject.HomeProject_PhaseIV.mappers.ManagerMapper;
+import dev.dumble.homeproject.HomeProject_PhaseIV.mapper.ManagerMapper;
 import dev.dumble.homeproject.HomeProject_PhaseIV.service.impl.*;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
