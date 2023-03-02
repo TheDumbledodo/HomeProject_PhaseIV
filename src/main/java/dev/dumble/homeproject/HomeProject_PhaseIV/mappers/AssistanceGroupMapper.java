@@ -1,7 +1,7 @@
 package dev.dumble.homeproject.HomeProject_PhaseIV.mappers;
 
 import dev.dumble.homeproject.HomeProject_PhaseIV.dto.AssistanceGroupDTO;
-import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.services.AssistanceGroup;
+import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.AssistanceGroup;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

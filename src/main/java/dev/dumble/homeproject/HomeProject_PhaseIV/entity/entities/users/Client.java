@@ -1,4 +1,4 @@
-package dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.members;
+package dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.users;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.UserEntity;

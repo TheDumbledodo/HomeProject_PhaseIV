@@ -2,13 +2,14 @@ package dev.dumble.homeproject.HomeProject_PhaseIV.service.impl;
 
 import dev.dumble.homeproject.HomeProject_PhaseIV.dto.ChangePasswordDTO;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.ConfirmationToken;
-import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.members.Client;
+import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.users.Client;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.enums.UserRole;
 import dev.dumble.homeproject.HomeProject_PhaseIV.exception.impl.DuplicateEntityException;
 import dev.dumble.homeproject.HomeProject_PhaseIV.exception.impl.NotPermittedException;
+import dev.dumble.homeproject.HomeProject_PhaseIV.filter.SearchSpecification;
+import dev.dumble.homeproject.HomeProject_PhaseIV.filter.request.SearchRequest;
 import dev.dumble.homeproject.HomeProject_PhaseIV.repository.IClientRepository;
 import dev.dumble.homeproject.HomeProject_PhaseIV.service.GenericService;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -67,7 +68,9 @@ public class ClientService extends GenericService<Long, IClientRepository, Clien
 		super.update(client);
 	}
 
-	public List<Client> findAll(Specification<Client> specification) {
+	public List<Client> findAll(SearchRequest request) {
+		var specification = new SearchSpecification<Client>(request);
+
 		return super.getRepository().findAll(specification);
 	}
 }

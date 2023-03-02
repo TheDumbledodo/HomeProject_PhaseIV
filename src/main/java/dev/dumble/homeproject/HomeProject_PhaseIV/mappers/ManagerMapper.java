@@ -1,7 +1,7 @@
 package dev.dumble.homeproject.HomeProject_PhaseIV.mappers;
 
 import dev.dumble.homeproject.HomeProject_PhaseIV.dto.ManagerDTO;
-import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.members.Manager;
+import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.users.Manager;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

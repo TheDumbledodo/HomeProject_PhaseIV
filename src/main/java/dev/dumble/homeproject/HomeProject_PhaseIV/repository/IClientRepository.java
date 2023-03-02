@@ -1,6 +1,6 @@
 package dev.dumble.homeproject.HomeProject_PhaseIV.repository;
 
-import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.members.Client;
+import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.users.Client;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;

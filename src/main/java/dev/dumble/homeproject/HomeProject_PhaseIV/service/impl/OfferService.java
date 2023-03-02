@@ -1,8 +1,8 @@
 package dev.dumble.homeproject.HomeProject_PhaseIV.service.impl;
 
-import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.members.Specialist;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.transactions.Offer;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.transactions.Request;
+import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.users.Specialist;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.enums.RequestStatus;
 import dev.dumble.homeproject.HomeProject_PhaseIV.exception.impl.*;
 import dev.dumble.homeproject.HomeProject_PhaseIV.repository.IOfferRepository;

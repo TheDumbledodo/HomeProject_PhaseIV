@@ -1,6 +1,6 @@
 package dev.dumble.homeproject.HomeProject_PhaseIV.service.impl;
 
-import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.services.Assistance;
+import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.Assistance;
 import dev.dumble.homeproject.HomeProject_PhaseIV.exception.impl.DuplicateEntityException;
 import dev.dumble.homeproject.HomeProject_PhaseIV.exception.impl.InvalidEntityException;
 import dev.dumble.homeproject.HomeProject_PhaseIV.repository.IAssistanceRepository;

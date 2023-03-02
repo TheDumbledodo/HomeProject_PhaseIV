@@ -2,8 +2,8 @@ package dev.dumble.homeproject.HomeProject_PhaseIV.service.impl;
 
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.UserEntity;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.ConfirmationToken;
-import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.members.Client;
-import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.members.Specialist;
+import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.users.Client;
+import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.users.Specialist;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.enums.SpecialistStatus;
 import dev.dumble.homeproject.HomeProject_PhaseIV.exception.impl.InvalidEntityException;
 import dev.dumble.homeproject.HomeProject_PhaseIV.repository.IConfirmationTokenRepository;

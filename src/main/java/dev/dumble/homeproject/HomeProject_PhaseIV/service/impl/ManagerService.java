@@ -1,6 +1,6 @@
 package dev.dumble.homeproject.HomeProject_PhaseIV.service.impl;
 
-import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.members.Manager;
+import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.users.Manager;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.enums.UserRole;
 import dev.dumble.homeproject.HomeProject_PhaseIV.exception.impl.DuplicateEntityException;
 import dev.dumble.homeproject.HomeProject_PhaseIV.repository.IManagerRepository;

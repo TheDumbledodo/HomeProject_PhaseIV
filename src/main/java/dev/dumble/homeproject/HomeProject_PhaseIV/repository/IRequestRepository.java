@@ -1,6 +1,6 @@
 package dev.dumble.homeproject.HomeProject_PhaseIV.repository;
 
-import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.services.Assistance;
+import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.Assistance;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.transactions.Request;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.enums.RequestStatus;
 import org.springframework.data.jpa.repository.JpaRepository;

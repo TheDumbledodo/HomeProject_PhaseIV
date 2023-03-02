@@ -1,8 +1,8 @@
-package dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.members;
+package dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.users;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.UserEntity;
-import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.services.Assistance;
+import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.Assistance;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.transactions.Offer;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.transactions.Review;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.enums.SpecialistStatus;

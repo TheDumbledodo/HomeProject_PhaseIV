@@ -1,4 +1,4 @@
-package dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.services;
+package dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.BaseEntity;

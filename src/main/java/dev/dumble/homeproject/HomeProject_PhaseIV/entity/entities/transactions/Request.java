@@ -2,8 +2,8 @@ package dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.transactions;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.Transaction;
-import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.members.Client;
-import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.services.Assistance;
+import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.Assistance;
+import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.users.Client;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.enums.RequestStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

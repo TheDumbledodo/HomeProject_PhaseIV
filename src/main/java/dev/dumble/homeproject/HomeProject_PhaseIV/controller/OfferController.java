@@ -1,8 +1,8 @@
 package dev.dumble.homeproject.HomeProject_PhaseIV.controller;
 
 import dev.dumble.homeproject.HomeProject_PhaseIV.dto.OfferDTO;
-import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.members.Specialist;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.transactions.Offer;
+import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.users.Specialist;
 import dev.dumble.homeproject.HomeProject_PhaseIV.mappers.OfferMapper;
 import dev.dumble.homeproject.HomeProject_PhaseIV.service.impl.OfferService;
 import dev.dumble.homeproject.HomeProject_PhaseIV.service.impl.RequestService;

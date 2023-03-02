@@ -2,7 +2,7 @@ package dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.transactions;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.Transaction;
-import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.members.Specialist;
+import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.users.Specialist;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
