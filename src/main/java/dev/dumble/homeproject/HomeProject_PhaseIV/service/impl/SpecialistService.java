@@ -1,6 +1,7 @@
 package dev.dumble.homeproject.HomeProject_PhaseIV.service.impl;
 
 import dev.dumble.homeproject.HomeProject_PhaseIV.dto.ChangePasswordDTO;
+import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.ConfirmationToken;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.members.Specialist;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.services.Assistance;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.enums.SpecialistStatus;
@@ -11,6 +12,7 @@ import dev.dumble.homeproject.HomeProject_PhaseIV.exception.impl.NotPermittedExc
 import dev.dumble.homeproject.HomeProject_PhaseIV.repository.ISpecialistRepository;
 import dev.dumble.homeproject.HomeProject_PhaseIV.service.GenericService;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,23 +24,39 @@ import java.util.Optional;
 public class SpecialistService extends GenericService<Long, ISpecialistRepository, Specialist> {
 
 	private final BCryptPasswordEncoder passwordEncoder;
+	private final EmailService emailService;
 
-	public SpecialistService(ISpecialistRepository repository, BCryptPasswordEncoder passwordEncoder) {
+	public SpecialistService(ISpecialistRepository repository, BCryptPasswordEncoder passwordEncoder, EmailService emailService) {
 		super(repository);
 		this.passwordEncoder = passwordEncoder;
+		this.emailService = emailService;
 	}
 
 	@Override
 	public Specialist create(Specialist specialist) {
+		var emailAddress = specialist.getEmailAddress();
+
 		if (super.getRepository()
-				.findClientByEmailAddress(specialist.getEmailAddress())
+				.findSpecialistByEmailAddress(emailAddress)
 				.isPresent())
 			throw new DuplicateEntityException("The email you provided already exists.");
+
+		var token = new ConfirmationToken();
+		var mailMessage = new SimpleMailMessage();
+		var request = "http://localhost:8081/api/v1/specialist/confirm-account?token=%s".formatted(token.getConfirmationToken());
+
+		mailMessage.setTo(emailAddress);
+		mailMessage.setFrom("Home_Project_IV");
+		mailMessage.setSubject("Home Project IV's Email Verification Link!");
+		mailMessage.setText("Confirm your account by clicking on this link: %s".formatted(request));
+
+		emailService.sendMail(mailMessage);
 
 		specialist.setPassword(passwordEncoder.encode(specialist.getPassword()));
 		specialist.setRegisteredTime(LocalDateTime.now());
 		specialist.setUserRole(UserRole.ROLE_SPECIALIST);
 		specialist.setStatus(SpecialistStatus.RECENT);
+		specialist.setToken(token);
 
 		return super.getRepository().save(specialist);
 	}

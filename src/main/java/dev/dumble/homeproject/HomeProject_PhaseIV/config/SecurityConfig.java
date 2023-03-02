@@ -74,6 +74,5 @@ public class SecurityConfig {
 							throw new InvalidEntityException("These entered login credentials are wrong!");
 						})
 				.passwordEncoder(passwordEncoder);
-
 	}
 }

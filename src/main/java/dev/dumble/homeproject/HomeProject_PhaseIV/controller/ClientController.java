@@ -6,6 +6,7 @@ import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.members.Client
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.transactions.Request;
 import dev.dumble.homeproject.HomeProject_PhaseIV.mappers.ClientMapper;
 import dev.dumble.homeproject.HomeProject_PhaseIV.service.impl.ClientService;
+import dev.dumble.homeproject.HomeProject_PhaseIV.service.impl.ConfirmationTokenService;
 import dev.dumble.homeproject.HomeProject_PhaseIV.service.impl.RequestService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -27,19 +28,29 @@ public class ClientController {
 
 	private ClientService clientService;
 	private RequestService requestService;
+	private ConfirmationTokenService tokenService;
 
 	@PostMapping("/register")
 	public ResponseEntity<Client> registerClient(@RequestBody @Valid UserDTO userDTO) {
 		var client = ClientMapper.getInstance().map(userDTO);
+
 		clientService.create(client);
 
-		return ResponseEntity.status(HttpStatus.CREATED).build();
+		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
 	@PostMapping("/change-password")
 	public ResponseEntity<Client> updateClientPassword(@RequestBody @Valid ChangePasswordDTO passwordDTO) {
 		var client = (Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		clientService.changePassword(client, passwordDTO);
+
+		return ResponseEntity.status(HttpStatus.OK).build();
+	}
+
+	@PostMapping("/confirm-account")
+	public ResponseEntity<Client> confirmClientAccount(@RequestParam(value = "token") @NonNull @NotBlank String token) {
+		var client = (Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		tokenService.confirmToken(client, token);
 
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}

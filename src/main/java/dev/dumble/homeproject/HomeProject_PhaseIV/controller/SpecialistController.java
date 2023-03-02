@@ -2,16 +2,20 @@ package dev.dumble.homeproject.HomeProject_PhaseIV.controller;
 
 import dev.dumble.homeproject.HomeProject_PhaseIV.dto.ChangePasswordDTO;
 import dev.dumble.homeproject.HomeProject_PhaseIV.dto.UserDTO;
+import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.members.Client;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.members.Specialist;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.transactions.Request;
 import dev.dumble.homeproject.HomeProject_PhaseIV.mappers.SpecialistMapper;
+import dev.dumble.homeproject.HomeProject_PhaseIV.service.impl.ConfirmationTokenService;
 import dev.dumble.homeproject.HomeProject_PhaseIV.service.impl.RequestService;
 import dev.dumble.homeproject.HomeProject_PhaseIV.service.impl.SpecialistService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,8 +28,9 @@ import java.util.Set;
 @RequestMapping("/api/v1/specialist")
 public class SpecialistController {
 
-	private SpecialistService specialistService;
 	private RequestService requestService;
+	private SpecialistService specialistService;
+	private ConfirmationTokenService tokenService;
 
 	@PostMapping("/register")
 	public ResponseEntity<Specialist> registerSpecialist(@RequestPart("profile_picture") MultipartFile profilePicture,
@@ -42,6 +47,15 @@ public class SpecialistController {
 	public ResponseEntity<Specialist> updateSpecialistPassword(@RequestBody @Valid ChangePasswordDTO passwordDTO) {
 		var specialist = (Specialist) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		specialistService.changePassword(specialist, passwordDTO);
+
+		return ResponseEntity.status(HttpStatus.OK).build();
+	}
+
+	@PostMapping("/confirm-account")
+	public ResponseEntity<Client> confirmSpecialistAccount(@RequestParam(value = "token") @NonNull @NotBlank String token) {
+		var specialist = (Specialist) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+		tokenService.confirmToken(specialist, token);
 
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}

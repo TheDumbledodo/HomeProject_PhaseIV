@@ -12,5 +12,5 @@ public interface ISpecialistRepository extends JpaRepository<Specialist, Long>, 
 
 	Optional<Specialist> findSpecialistByUsername(String username);
 
-	Optional<Specialist> findClientByEmailAddress(String email);
+	Optional<Specialist> findSpecialistByEmailAddress(String email);
 }

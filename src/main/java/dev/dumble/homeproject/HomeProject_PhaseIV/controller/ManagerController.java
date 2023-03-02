@@ -28,9 +28,9 @@ import java.util.List;
 @RequestMapping("/api/v1/manager")
 public class ManagerController {
 
+	private ClientService clientService;
 	private ManagerService managerService;
 	private SpecialistService specialistService;
-	private ClientService clientService;
 	private AssistanceService assistanceService;
 
 	@PostMapping("/create")

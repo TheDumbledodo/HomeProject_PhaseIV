@@ -1,6 +1,7 @@
 package dev.dumble.homeproject.HomeProject_PhaseIV.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.ConfirmationToken;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
@@ -25,6 +26,10 @@ import java.util.List;
 @SuperBuilder(setterPrefix = "set")
 public abstract class UserEntity extends BaseEntity<Long> implements UserDetails {
 
+	@JsonIgnore
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private ConfirmationToken token;
+
 	@Temporal(value = TemporalType.TIMESTAMP)
 	private LocalDateTime registeredTime;
 
@@ -41,6 +46,8 @@ public abstract class UserEntity extends BaseEntity<Long> implements UserDetails
 	private String username, firstName, lastName;
 
 	private Long credit;
+
+	private boolean enabled;
 
 	@Override @JsonIgnore
 	public Collection<? extends GrantedAuthority> getAuthorities() {
