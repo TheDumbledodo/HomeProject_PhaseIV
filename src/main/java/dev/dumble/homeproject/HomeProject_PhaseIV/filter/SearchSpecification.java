@@ -6,18 +6,11 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.NonNull;
 
-import java.io.Serial;
-
-@Slf4j
 @AllArgsConstructor
 public class SearchSpecification<T> implements Specification<T> {
-
-	@Serial
-	private static final long serialVersionUID = -9153865343320750644L;
 
 	private final transient SearchRequest request;
 

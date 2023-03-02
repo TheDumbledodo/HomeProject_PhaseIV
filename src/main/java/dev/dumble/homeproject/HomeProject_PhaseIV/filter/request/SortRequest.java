@@ -9,7 +9,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 @Data @Builder(setterPrefix = "set")
@@ -17,9 +16,6 @@ import java.io.Serializable;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class SortRequest implements Serializable {
-
-	@Serial
-	private static final long serialVersionUID = 3194362295851723069L;
 
 	private String key;
 	private SortDirection direction;

@@ -1,11 +1,9 @@
 package dev.dumble.homeproject.HomeProject_PhaseIV.filter.enums;
 
 import dev.dumble.homeproject.HomeProject_PhaseIV.utils.Utility;
-import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 
-@Slf4j
 public enum FieldType {
 	DATE {
 		@Override
