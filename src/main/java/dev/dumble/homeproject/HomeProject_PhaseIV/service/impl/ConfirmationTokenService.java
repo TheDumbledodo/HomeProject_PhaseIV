@@ -32,7 +32,7 @@ public class ConfirmationTokenService extends GenericService<Long, IConfirmation
 		var token = optionalToken.get();
 		token.setUsed(true);
 
-		userEntity.setEnabled(true);
+		userEntity.setVerified(true);
 		userEntity.setToken(token);
 
 		if (userEntity instanceof Specialist specialist) {

@@ -2,6 +2,7 @@ package dev.dumble.homeproject.HomeProject_PhaseIV.controller;
 
 import dev.dumble.homeproject.HomeProject_PhaseIV.dto.OfferDTO;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.transactions.Offer;
+import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.users.Client;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.users.Specialist;
 import dev.dumble.homeproject.HomeProject_PhaseIV.filter.enums.RequestSorter;
 import dev.dumble.homeproject.HomeProject_PhaseIV.mapper.OfferMapper;
@@ -50,8 +51,9 @@ public class OfferController {
 	@PreAuthorize("hasRole('CLIENT')")
 	public ResponseEntity<Set<Offer>> findAllOffersFromRequest(@RequestParam(value = "request_id") Long requestId) {
 		var request = requestService.findById(requestId);
+		var client = (Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-		var sortedOffers = offerService.findRequestOffers(request, RequestSorter.SORT_NONE);
+		var sortedOffers = offerService.findRequestOffers(client, request, RequestSorter.SORT_NONE);
 		var optionalOffers = Optional.of(sortedOffers);
 
 		return ResponseEntity.of(optionalOffers);
@@ -61,8 +63,9 @@ public class OfferController {
 	@PreAuthorize("hasRole('CLIENT')")
 	public ResponseEntity<Set<Offer>> sortRequestOffersByPrice(@RequestParam(value = "request_id") Long requestId) {
 		var request = requestService.findById(requestId);
+		var client = (Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-		var sortedOffers = offerService.findRequestOffers(request, RequestSorter.SORT_PRICE);
+		var sortedOffers = offerService.findRequestOffers(client, request, RequestSorter.SORT_PRICE);
 		var optionalOffers = Optional.of(sortedOffers);
 
 		return ResponseEntity.of(optionalOffers);
@@ -72,8 +75,9 @@ public class OfferController {
 	@PreAuthorize("hasRole('CLIENT')")
 	public ResponseEntity<Set<Offer>> sortRequestOffersBySpecialistRating(@RequestParam(value = "request_id") Long requestId) {
 		var request = requestService.findById(requestId);
+		var client = (Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-		var sortedOffers = offerService.findRequestOffers(request, RequestSorter.SORT_SPECIALIST_RATING);
+		var sortedOffers = offerService.findRequestOffers(client, request, RequestSorter.SORT_SPECIALIST_RATING);
 		var optionalOffers = Optional.of(sortedOffers);
 
 		return ResponseEntity.of(optionalOffers);

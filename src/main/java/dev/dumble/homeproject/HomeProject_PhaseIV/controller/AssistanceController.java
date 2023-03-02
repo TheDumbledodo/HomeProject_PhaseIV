@@ -50,8 +50,8 @@ public class AssistanceController {
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
-	@PreAuthorize("hasAnyRole('MANAGER', 'CLIENT')")
 	@GetMapping("/all-assistances")
+	@PreAuthorize("permitAll()")
 	public ResponseEntity<List<Assistance>> findAllAssistancesFromGroup(@RequestParam(value = "assistance_group_id") Long groupId) {
 		var group = groupService.findById(groupId);
 		var optionalAssistanceList = Optional.of(group.getAssistanceList());

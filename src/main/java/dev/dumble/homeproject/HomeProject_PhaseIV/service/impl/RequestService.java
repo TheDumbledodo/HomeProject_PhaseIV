@@ -40,6 +40,9 @@ public class RequestService extends GenericService<Long, IRequestRepository, Req
 	}
 
 	public Request create(Request request, Assistance assistance, Client client) {
+		if (!client.isVerified())
+			throw new NotPermittedException("The clients account hasn't been verified yet.");
+
 		var minimumPrice = assistance.getMinimumPrice();
 		if (request.getOfferedPrice() < minimumPrice)
 			throw new InsufficientFundsException("The offered price is lower than the minimum price -> %s$".formatted(minimumPrice));
@@ -58,7 +61,10 @@ public class RequestService extends GenericService<Long, IRequestRepository, Req
 		return savedRequest;
 	}
 
-	public void startRequest(Request request) {
+	public void startRequest(Client client, Request request) {
+		if (!client.isVerified())
+			throw new NotPermittedException("The clients account hasn't been verified yet.");
+
 		if (request.getStatus() != RequestStatus.AWAITING_START)
 			throw new NotPermittedException("The request cannot be started yet because the client isn't waiting for it to start.");
 
@@ -69,7 +75,10 @@ public class RequestService extends GenericService<Long, IRequestRepository, Req
 		this.update(request);
 	}
 
-	public void finishRequest(Request request) {
+	public void finishRequest(Client client, Request request) {
+		if (!client.isVerified())
+			throw new NotPermittedException("The clients account hasn't been verified yet.");
+
 		if (request.getStatus() != RequestStatus.STARTED)
 			throw new NotPermittedException("The request can't be started because the status isn't started.");
 
@@ -83,7 +92,6 @@ public class RequestService extends GenericService<Long, IRequestRepository, Req
 		specialist.incrementFinishedRequests();
 		specialistService.update(specialist);
 
-		var client = request.getClient();
 		client.incrementFinishedRequests();
 		clientService.update(client);
 
@@ -109,6 +117,9 @@ public class RequestService extends GenericService<Long, IRequestRepository, Req
 	}
 
 	public void paySpecialist(Request request, Client client, Review review) {
+		if (!client.isVerified())
+			throw new NotPermittedException("The clients account hasn't been verified yet.");
+
 		if (request.getStatus() != RequestStatus.DONE)
 			throw new NotPermittedException("The request can't be paid because the status isn't done.");
 
@@ -140,14 +151,23 @@ public class RequestService extends GenericService<Long, IRequestRepository, Req
 	}
 
 	public Set<Request> findMatchingRequests(Specialist specialist) {
+		if (specialist.isNotAccepted())
+			throw new NotPermittedException("The specialist hasn't been accepted yet.");
+
 		return super.getRepository().findMatchingRequests(specialist.getAssistanceList());
 	}
 
 	public Set<Request> findClientRequests(Client client, RequestStatus requestStatus) {
+		if (!client.isVerified())
+			throw new NotPermittedException("The clients account hasn't been verified yet.");
+
 		return super.getRepository().findClientRequests(requestStatus, client.getId());
 	}
 
 	public Set<Request> findSpecialistRequests(Specialist specialist, RequestStatus requestStatus) {
+		if (specialist.isNotAccepted())
+			throw new NotPermittedException("The specialist hasn't been accepted yet.");
+
 		return specialist.getOffers().stream()
 				.map(Offer::getRequest)
 				.filter(request -> request.getStatus() == requestStatus)

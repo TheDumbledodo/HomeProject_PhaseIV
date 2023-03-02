@@ -45,7 +45,7 @@ public abstract class UserEntity extends BaseEntity<Long> implements UserDetails
 	private String username, firstName, lastName;
 	private Long credit;
 
-	private boolean enabled;
+	private boolean verified;
 
 	@Override @JsonIgnore
 	public Collection<? extends GrantedAuthority> getAuthorities() {

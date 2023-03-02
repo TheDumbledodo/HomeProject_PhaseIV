@@ -22,8 +22,8 @@ public class AssistanceGroupController {
 
 	private AssistanceGroupService groupService;
 
-	@PreAuthorize("hasRole('MANAGER')")
 	@PostMapping("/create")
+	@PreAuthorize("hasRole('MANAGER')")
 	public ResponseEntity<AssistanceGroup> createAssistanceGroup(@RequestBody @Valid AssistanceGroupDTO groupRequest) {
 		var assistanceGroup = AssistanceGroupMapper.getInstance().map(groupRequest);
 		groupService.create(assistanceGroup);
@@ -31,8 +31,8 @@ public class AssistanceGroupController {
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
-	@PreAuthorize("hasAnyRole('MANAGER', 'CLIENT')")
 	@GetMapping("/all-groups")
+	@PreAuthorize("permitAll()")
 	public ResponseEntity<List<AssistanceGroup>> findAllAssistanceGroups() {
 		var groupList = groupService.findAll();
 		var optionalGroupList = Optional.ofNullable(groupList);

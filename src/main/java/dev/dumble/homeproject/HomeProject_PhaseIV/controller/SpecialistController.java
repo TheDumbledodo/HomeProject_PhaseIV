@@ -83,7 +83,7 @@ public class SpecialistController {
 	@GetMapping("/rating")
 	public ResponseEntity<Long> findSpecialistRating() {
 		var specialist = (Specialist) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		var optionalRating = Optional.of(specialist.getRating());
+		var optionalRating = Optional.of(specialistService.getRating(specialist));
 
 		return ResponseEntity.of(optionalRating);
 	}

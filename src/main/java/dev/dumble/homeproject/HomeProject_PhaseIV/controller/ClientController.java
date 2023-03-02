@@ -69,7 +69,7 @@ public class ClientController {
 	@GetMapping("/credit")
 	public ResponseEntity<Long> findClientCredit() {
 		var client = (Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		var optionalRating = Optional.of(client.getCredit());
+		var optionalRating = Optional.of(clientService.getCredit(client));
 
 		return ResponseEntity.of(optionalRating);
 	}

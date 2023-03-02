@@ -61,11 +61,21 @@ public class ClientService extends GenericService<Long, IClientRepository, Clien
 	}
 
 	public void changePassword(Client client, ChangePasswordDTO passwordDTO) {
+		if (!client.isVerified())
+			throw new NotPermittedException("The clients account hasn't been verified yet.");
+
 		if (!passwordEncoder.matches(passwordDTO.getOldPassword(), client.getPassword()))
 			throw new NotPermittedException("The password you entered doesn't match your current password.");
 
 		client.setPassword(passwordEncoder.encode(passwordDTO.getNewPassword()));
 		super.update(client);
+	}
+
+	public Long getCredit(Client client) {
+		if (!client.isVerified())
+			throw new NotPermittedException("The clients account hasn't been verified yet.");
+
+		return client.getCredit();
 	}
 
 	public List<Client> findAll(SearchRequest request) {

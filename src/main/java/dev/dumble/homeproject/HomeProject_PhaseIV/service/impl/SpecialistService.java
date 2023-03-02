@@ -102,7 +102,7 @@ public class SpecialistService extends GenericService<Long, ISpecialistRepositor
 	public void acceptSpecialist(Specialist specialist) {
 		specialist.setStatus(SpecialistStatus.ACCEPTED);
 		specialist.getToken().setUsed(true);
-		specialist.setEnabled(true);
+		specialist.setVerified(true);
 		super.update(specialist);
 	}
 
@@ -111,5 +111,12 @@ public class SpecialistService extends GenericService<Long, ISpecialistRepositor
 		var pageable = SearchSpecification.getPageable(request.getSize());
 
 		return super.getRepository().findAll(specification, pageable).getContent();
+	}
+
+	public Long getRating(Specialist specialist) {
+		if (specialist.isNotAccepted())
+			throw new NotPermittedException("The specialist hasn't been accepted yet.");
+
+		return specialist.getRating();
 	}
 }

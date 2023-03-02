@@ -47,8 +47,9 @@ public class RequestController {
 													  @RequestParam(value = "offer_id") Long offerId) {
 		var databaseRequest = requestService.findById(requestId);
 		var databaseOffer = offerService.findById(offerId);
+		var client = (Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-		offerService.acceptOffer(databaseRequest, databaseOffer);
+		offerService.acceptOffer(client, databaseRequest, databaseOffer);
 
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
@@ -56,8 +57,9 @@ public class RequestController {
 	@PostMapping("/{id}/start-request")
 	public ResponseEntity<Request> startRequest(@PathVariable(name = "id") Long requestId) {
 		var databaseRequest = requestService.findById(requestId);
+		var client = (Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-		requestService.startRequest(databaseRequest);
+		requestService.startRequest(client, databaseRequest);
 
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
@@ -65,8 +67,9 @@ public class RequestController {
 	@PostMapping("/{id}/finish-request")
 	public ResponseEntity<Request> finishRequest(@PathVariable(name = "id") Long requestId) {
 		var request = requestService.findById(requestId);
+		var client = (Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-		requestService.finishRequest(request);
+		requestService.finishRequest(client, request);
 
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}

@@ -2,6 +2,7 @@ package dev.dumble.homeproject.HomeProject_PhaseIV.service.impl;
 
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.transactions.Offer;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.transactions.Request;
+import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.users.Client;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.users.Specialist;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.enums.RequestStatus;
 import dev.dumble.homeproject.HomeProject_PhaseIV.exception.impl.*;
@@ -68,7 +69,10 @@ public class OfferService extends GenericService<Long, IOfferRepository, Offer> 
 				.isPresent();
 	}
 
-	public Set<Offer> findRequestOffers(Request request, RequestSorter sorter) {
+	public Set<Offer> findRequestOffers(Client client, Request request, RequestSorter sorter) {
+		if (!client.isVerified())
+			throw new NotPermittedException("The clients account hasn't been verified yet.");
+
 		var requestId = request.getId();
 
 		return switch (sorter) {
@@ -78,7 +82,10 @@ public class OfferService extends GenericService<Long, IOfferRepository, Offer> 
 		};
 	}
 
-	public void acceptOffer(Request request, Offer offer) {
+	public void acceptOffer(Client client, Request request, Offer offer) {
+		if (!client.isVerified())
+			throw new NotPermittedException("The clients account hasn't been verified yet.");
+
 		if (request.getStatus() != RequestStatus.AWAITING_SELECTION)
 			throw new InvalidRequestStatusException("The requests status must be awaiting selection for it to be started.");
 
