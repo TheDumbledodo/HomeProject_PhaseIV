@@ -49,7 +49,6 @@ public class SecurityConfig {
 				.requestMatchers("/api/v1/request/**").hasRole("CLIENT")
 
 				.requestMatchers("/api/v1/manager/**").hasRole("MANAGER")
-				.requestMatchers("/api/v1/assistance/**", "/api/v1/assistance-group/**").hasRole("MANAGER")
 				.anyRequest().authenticated()
 				.and().httpBasic();
 

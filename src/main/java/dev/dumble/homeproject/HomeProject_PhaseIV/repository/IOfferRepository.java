@@ -13,14 +13,14 @@ import java.util.Set;
 public interface IOfferRepository extends JpaRepository<Offer, Long> {
 
 	@Query(value =
-			"FROM Offer WHERE acceptedRequest = null AND description ilike :description AND request.id = :requestId AND specialist.id = :specialistId")
+			"FROM Offer WHERE acceptedRequest = null AND description ILIKE :description AND request.id = :requestId AND specialist.id = :specialistId")
 	Optional<Offer> findMatchingOffers(@Param(value = "description") String description,
 									   @Param(value = "requestId") Long requestId,
 									   @Param(value = "specialistId") Long specialistId);
 
-	@Query(value = "FROM Offer WHERE request.id = :requestId ORDER BY offeredPrice asc")
+	@Query(value = "FROM Offer WHERE request.id = :requestId ORDER BY offeredPrice ASC")
 	Set<Offer> findRequestOffersByPrice(@Param(value = "requestId") Long requestId);
 
-	@Query(value = "FROM Offer WHERE request.id = :requestId ORDER BY specialist.rating asc")
+	@Query(value = "FROM Offer WHERE request.id = :requestId ORDER BY specialist.rating ASC")
 	Set<Offer> findRequestOffersBySpecialistRating(@Param(value = "requestId") Long requestId);
 }

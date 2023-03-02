@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class AssistanceGroupController {
 
 	private AssistanceGroupService groupService;
 
+	@PreAuthorize("hasRole('MANAGER')")
 	@PostMapping("/create")
 	public ResponseEntity<AssistanceGroup> createAssistanceGroup(@RequestBody @Valid AssistanceGroupDTO groupRequest) {
 		var assistanceGroup = AssistanceGroupMapper.getInstance().map(groupRequest);
@@ -29,6 +31,7 @@ public class AssistanceGroupController {
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
+	@PreAuthorize("hasAnyRole('MANAGER', 'CLIENT')")
 	@GetMapping("/all-groups")
 	public ResponseEntity<List<AssistanceGroup>> findAllAssistanceGroups() {
 		var groupList = groupService.findAll();

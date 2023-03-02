@@ -70,7 +70,8 @@ public class ClientService extends GenericService<Long, IClientRepository, Clien
 
 	public List<Client> findAll(SearchRequest request) {
 		var specification = new SearchSpecification<Client>(request);
+		var pageable = SearchSpecification.getPageable(request.getSize());
 
-		return super.getRepository().findAll(specification);
+		return super.getRepository().findAll(specification, pageable).getContent();
 	}
 }

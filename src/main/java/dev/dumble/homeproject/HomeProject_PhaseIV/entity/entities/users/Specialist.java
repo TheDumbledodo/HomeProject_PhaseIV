@@ -37,13 +37,11 @@ public class Specialist extends UserEntity {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "specialist", fetch = FetchType.EAGER)
 	private List<Review> reviews;
 
-	@NotNull @JsonIgnore
-	private byte[] profilePicture;
-
-	private long rating;
-
 	@Enumerated(value = EnumType.STRING)
 	private SpecialistStatus status;
+
+	@NotNull @JsonIgnore
+	private byte[] profilePicture;
 
 	@JsonIgnore
 	@Column(nullable = false, length = 16000000)
@@ -51,19 +49,9 @@ public class Specialist extends UserEntity {
 		return profilePicture;
 	}
 
-	public boolean containsAssistance(Assistance assistance) {
-		return this.assistanceList.contains(assistance);
-	}
-
-	@Override
-	public boolean isEnabled() {
-		return this.getStatus() != SpecialistStatus.DISABLED;
-	}
-
-	@JsonIgnore
-	public boolean isNotAccepted() {
-		return this.getStatus() != SpecialistStatus.ACCEPTED;
-	}
+	private long submittedOffers;
+	private long finishedRequests;
+	private long rating;
 
 	public void setProfilePicture(MultipartFile file) {
 		var picture = FileUtils.convertImageToBytes(file);
@@ -71,6 +59,14 @@ public class Specialist extends UserEntity {
 			throw new ImproperProfilePictureException();
 
 		this.profilePicture = picture;
+	}
+
+	public void incrementFinishedRequests() {
+		this.finishedRequests += 1;
+	}
+
+	public void incrementSubmittedOffers() {
+		this.submittedOffers += 1;
 	}
 
 	public void addRating(int rating) {
@@ -81,6 +77,10 @@ public class Specialist extends UserEntity {
 		this.rating -= rating;
 	}
 
+	public boolean containsAssistance(Assistance assistance) {
+		return this.assistanceList.contains(assistance);
+	}
+
 	public void addAssistance(Assistance assistance) {
 		this.assistanceList.add(assistance);
 		assistance.getSpecialistList().add(this);
@@ -89,5 +89,15 @@ public class Specialist extends UserEntity {
 	public void removeAssistance(Assistance assistance) {
 		this.assistanceList.remove(assistance);
 		assistance.getSpecialistList().remove(this);
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return this.getStatus() != SpecialistStatus.DISABLED;
+	}
+
+	@JsonIgnore
+	public boolean isNotAccepted() {
+		return this.getStatus() != SpecialistStatus.ACCEPTED;
 	}
 }

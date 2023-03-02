@@ -67,7 +67,6 @@ public enum Operator {
 	LOWER_THAN {
 		@Override
 		public <T> Predicate build(Root<T> root, CriteriaBuilder builder, FilterRequest request, Predicate predicate) {
-
 			var value = request.getFieldType().parse(request.getValue().toString());
 
 			var fieldType = request.getFieldType();

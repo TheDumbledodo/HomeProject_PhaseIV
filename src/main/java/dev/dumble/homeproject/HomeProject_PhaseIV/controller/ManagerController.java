@@ -1,16 +1,13 @@
 package dev.dumble.homeproject.HomeProject_PhaseIV.controller;
 
 import dev.dumble.homeproject.HomeProject_PhaseIV.dto.ManagerDTO;
+import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.transactions.Request;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.users.Client;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.users.Manager;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.users.Specialist;
-import dev.dumble.homeproject.HomeProject_PhaseIV.entity.enums.SpecialistStatus;
 import dev.dumble.homeproject.HomeProject_PhaseIV.filter.request.SearchRequest;
 import dev.dumble.homeproject.HomeProject_PhaseIV.mappers.ManagerMapper;
-import dev.dumble.homeproject.HomeProject_PhaseIV.service.impl.AssistanceService;
-import dev.dumble.homeproject.HomeProject_PhaseIV.service.impl.ClientService;
-import dev.dumble.homeproject.HomeProject_PhaseIV.service.impl.ManagerService;
-import dev.dumble.homeproject.HomeProject_PhaseIV.service.impl.SpecialistService;
+import dev.dumble.homeproject.HomeProject_PhaseIV.service.impl.*;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +26,7 @@ public class ManagerController {
 	private ManagerService managerService;
 	private SpecialistService specialistService;
 	private AssistanceService assistanceService;
+	private RequestService requestService;
 
 	@PostMapping("/create")
 	public ResponseEntity<Manager> registerClient(@RequestBody @Valid ManagerDTO managerDTO) {
@@ -42,7 +40,7 @@ public class ManagerController {
 	public ResponseEntity<Specialist> acceptSpecialist(@RequestParam(value = "specialist_id") Long specialistId) {
 		var specialist = specialistService.findById(specialistId);
 
-		specialistService.changeStatus(specialist, SpecialistStatus.ACCEPTED);
+		specialistService.acceptSpecialist(specialist);
 
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
@@ -77,5 +75,13 @@ public class ManagerController {
 	@GetMapping(value = "/search-specialist")
 	public List<Specialist> searchForSpecialists(@RequestBody SearchRequest request) {
 		return specialistService.findAll(request);
+	}
+
+	@GetMapping(value = "/search-request")
+	public List<Request> searchForRequestsByClient(@RequestBody SearchRequest request,
+												   @RequestParam(value = "client_id", required = false) Long clientId,
+												   @RequestParam(value = "assistance_id", required = false) Long assistanceId,
+												   @RequestParam(value = "group_id", required = false) Long groupId) {
+		return requestService.findAllFilteredRequests(request, clientId, assistanceId, groupId);
 	}
 }

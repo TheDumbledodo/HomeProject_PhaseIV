@@ -17,10 +17,12 @@ import java.util.Set;
 @Service
 public class OfferService extends GenericService<Long, IOfferRepository, Offer> {
 
+	private final SpecialistService specialistService;
 	private final RequestService requestService;
 
-	public OfferService(IOfferRepository repository, RequestService requestService) {
+	public OfferService(IOfferRepository repository, SpecialistService specialistService, RequestService requestService) {
 		super(repository);
+		this.specialistService = specialistService;
 		this.requestService = requestService;
 	}
 
@@ -48,6 +50,9 @@ public class OfferService extends GenericService<Long, IOfferRepository, Offer> 
 
 		request.setStatus(RequestStatus.AWAITING_SELECTION);
 		requestService.update(request);
+
+		specialist.incrementSubmittedOffers();
+		specialistService.update(specialist);
 
 		return savedOffer;
 	}

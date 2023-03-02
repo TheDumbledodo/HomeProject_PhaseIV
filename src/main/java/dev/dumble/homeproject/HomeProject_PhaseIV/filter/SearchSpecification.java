@@ -6,8 +6,12 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.NonNull;
+
+import java.util.Objects;
 
 @AllArgsConstructor
 public class SearchSpecification<T> implements Specification<T> {
@@ -28,5 +32,9 @@ public class SearchSpecification<T> implements Specification<T> {
 
 		query.orderBy(orders);
 		return predicate;
+	}
+
+	public static Pageable getPageable(Integer size) {
+		return PageRequest.of(0, Objects.requireNonNullElse(size, 50));
 	}
 }

@@ -12,12 +12,16 @@ import dev.dumble.homeproject.HomeProject_PhaseIV.exception.impl.DuplicateEntity
 import dev.dumble.homeproject.HomeProject_PhaseIV.exception.impl.InsufficientFundsException;
 import dev.dumble.homeproject.HomeProject_PhaseIV.exception.impl.InvalidEntityException;
 import dev.dumble.homeproject.HomeProject_PhaseIV.exception.impl.NotPermittedException;
+import dev.dumble.homeproject.HomeProject_PhaseIV.filter.SearchSpecification;
+import dev.dumble.homeproject.HomeProject_PhaseIV.filter.request.SearchRequest;
 import dev.dumble.homeproject.HomeProject_PhaseIV.repository.IRequestRepository;
 import dev.dumble.homeproject.HomeProject_PhaseIV.service.GenericService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -58,6 +62,9 @@ public class RequestService extends GenericService<Long, IRequestRepository, Req
 		if (request.getStatus() != RequestStatus.AWAITING_START)
 			throw new NotPermittedException("The request cannot be started yet because the client isn't waiting for it to start.");
 
+		if (request.getDueTime().isBefore(LocalDateTime.now()))
+			throw new NotPermittedException("You cannot start the request before the due time set by the specialist!");
+
 		request.setStatus(RequestStatus.STARTED);
 		this.update(request);
 	}
@@ -72,6 +79,14 @@ public class RequestService extends GenericService<Long, IRequestRepository, Req
 
 		this.handleOverdueRequest(request, acceptedOffer);
 
+		var specialist = request.getAcceptedOffer().getSpecialist();
+		specialist.incrementFinishedRequests();
+		specialistService.update(specialist);
+
+		var client = request.getClient();
+		client.incrementFinishedRequests();
+		clientService.update(client);
+
 		request.setStatus(RequestStatus.DONE);
 		this.update(request);
 	}
@@ -80,7 +95,6 @@ public class RequestService extends GenericService<Long, IRequestRepository, Req
 		var dueTime = request.getDueTime();
 		var now = LocalDateTime.now();
 
-		if (!now.isAfter(dueTime)) return;
 		var delayedDays = ChronoUnit.HOURS.between(dueTime, now);
 		var specialist = acceptedOffer.getSpecialist();
 
@@ -133,11 +147,39 @@ public class RequestService extends GenericService<Long, IRequestRepository, Req
 		return super.getRepository().findClientRequests(requestStatus, client.getId());
 	}
 
-	// todo: improve this somehow
 	public Set<Request> findSpecialistRequests(Specialist specialist, RequestStatus requestStatus) {
 		return specialist.getOffers().stream()
 				.map(Offer::getRequest)
 				.filter(request -> request.getStatus() == requestStatus)
 				.collect(Collectors.toSet());
+	}
+
+	public List<Request> findAll(SearchRequest searchRequest) {
+		var specification = new SearchSpecification<Request>(searchRequest);
+		var pageable = SearchSpecification.getPageable(searchRequest.getSize());
+
+		return super.getRepository().findAll(specification, pageable).getContent();
+	}
+
+	// todo: this could be improved after phase IV
+	public List<Request> findAllFilteredRequests(SearchRequest searchRequest, Long clientId, Long assistanceId, Long groupId) {
+		var requests = this.findAll(searchRequest);
+
+		if (Objects.nonNull(clientId))
+			requests = requests.stream()
+					.filter(request -> request.getClient().getId().equals(clientId))
+					.toList();
+
+		if (Objects.nonNull(assistanceId))
+			requests = requests.stream()
+					.filter(request -> request.getAssistance().getId().equals(assistanceId))
+					.toList();
+
+		if (Objects.nonNull(groupId))
+			requests = requests.stream()
+					.filter(request -> request.getAssistance().getGroup().getId().equals(groupId))
+					.toList();
+
+		return requests;
 	}
 }

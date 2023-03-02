@@ -1,5 +1,6 @@
 package dev.dumble.homeproject.HomeProject_PhaseIV.filter.enums;
 
+import dev.dumble.homeproject.HomeProject_PhaseIV.entity.enums.RequestStatus;
 import dev.dumble.homeproject.HomeProject_PhaseIV.utils.Utility;
 
 import java.time.LocalDateTime;
@@ -44,6 +45,13 @@ public enum FieldType {
 		@Override
 		public Object parse(String value) {
 			return value.charAt(0);
+		}
+	},
+	// todo: this could be improved after phase IV
+	ENUM {
+		@Override
+		public Object parse(String value) {
+			return Enum.valueOf(RequestStatus.class, value.toUpperCase());
 		}
 	},
 	STRING {

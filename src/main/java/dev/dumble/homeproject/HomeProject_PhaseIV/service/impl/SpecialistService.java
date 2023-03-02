@@ -99,14 +99,17 @@ public class SpecialistService extends GenericService<Long, ISpecialistRepositor
 		super.update(specialist);
 	}
 
-	public void changeStatus(Specialist specialist, SpecialistStatus status) {
-		specialist.setStatus(status);
+	public void acceptSpecialist(Specialist specialist) {
+		specialist.setStatus(SpecialistStatus.ACCEPTED);
+		specialist.getToken().setUsed(true);
+		specialist.setEnabled(true);
 		super.update(specialist);
 	}
 
 	public List<Specialist> findAll(SearchRequest request) {
 		var specification = new SearchSpecification<Specialist>(request);
+		var pageable = SearchSpecification.getPageable(request.getSize());
 
-		return super.getRepository().findAll(specification);
+		return super.getRepository().findAll(specification, pageable).getContent();
 	}
 }

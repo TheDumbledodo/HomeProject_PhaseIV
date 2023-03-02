@@ -23,7 +23,15 @@ public class Client extends UserEntity {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "client", fetch = FetchType.EAGER)
 	private List<Request> requests;
 
+	private long submittedRequests;
+	private long finishedRequests;
+
 	public void addRequest(Request request) {
 		requests.add(request);
+		submittedRequests += 1;
+	}
+
+	public void incrementFinishedRequests() {
+		this.finishedRequests += 1;
 	}
 }

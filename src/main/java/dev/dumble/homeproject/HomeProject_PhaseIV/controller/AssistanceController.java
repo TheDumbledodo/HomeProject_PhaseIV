@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class AssistanceController {
 	private AssistanceGroupService groupService;
 
 	@PostMapping("/create")
+	@PreAuthorize("hasRole('MANAGER')")
 	public ResponseEntity<Assistance> createAssistance(@RequestBody @Valid AssistanceDTO assistanceDTO,
 													   @RequestParam(value = "assistance_group_id") Long groupId) {
 		var assistance = AssistanceMapper.getInstance().map(assistanceDTO);
@@ -36,6 +38,7 @@ public class AssistanceController {
 	}
 
 	@PostMapping("/{id}/update")
+	@PreAuthorize("hasRole('MANAGER')")
 	public ResponseEntity<Assistance> updateAssistance(@PathVariable(name = "id") Long assistanceId,
 													   @RequestBody @Valid AssistanceDTO assistanceDTO) {
 		var assistance = assistanceService.findById(assistanceId);
@@ -47,6 +50,7 @@ public class AssistanceController {
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
+	@PreAuthorize("hasAnyRole('MANAGER', 'CLIENT')")
 	@GetMapping("/all-assistances")
 	public ResponseEntity<List<Assistance>> findAllAssistancesFromGroup(@RequestParam(value = "assistance_group_id") Long groupId) {
 		var group = groupService.findById(groupId);
