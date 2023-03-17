@@ -7,6 +7,7 @@ import jakarta.persistence.TemporalType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -16,6 +17,7 @@ import java.util.UUID;
 public class ConfirmationToken extends BaseEntity<Long> {
 
 	@Temporal(value = TemporalType.TIMESTAMP)
+	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private LocalDateTime creationDate;
 
 	private String confirmationToken;

@@ -12,6 +12,8 @@ public interface ManagerMapper {
 
 	Manager map(ManagerDTO managerDTO);
 
+	ManagerDTO serialize(Manager manager);
+
 	static ManagerMapper getInstance() {
 		return instance;
 	}

@@ -12,6 +12,8 @@ public interface ReviewMapper {
 
 	Review map(ReviewDTO reviewDTO);
 
+	ReviewDTO serialize(Review review);
+
 	static ReviewMapper getInstance() {
 		return instance;
 	}

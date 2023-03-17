@@ -12,6 +12,8 @@ public interface SpecialistMapper {
 
 	Specialist map(UserDTO userDTO);
 
+	UserDTO serialize(Specialist specialist);
+
 	static SpecialistMapper getInstance() {
 		return instance;
 	}

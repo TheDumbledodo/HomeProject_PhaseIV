@@ -1,6 +1,5 @@
 package dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.users;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.UserEntity;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.transactions.Request;
 import jakarta.persistence.*;
@@ -19,7 +18,6 @@ import java.util.List;
 @SuperBuilder(setterPrefix = "set")
 public class Client extends UserEntity {
 
-	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "client", fetch = FetchType.EAGER)
 	private List<Request> requests;
 

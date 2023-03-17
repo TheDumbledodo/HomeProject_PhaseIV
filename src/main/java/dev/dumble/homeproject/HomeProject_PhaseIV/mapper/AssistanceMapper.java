@@ -12,6 +12,8 @@ public interface AssistanceMapper {
 
 	Assistance map(AssistanceDTO assistanceDTO);
 
+	AssistanceDTO serialize(Assistance assistance);
+
 	static AssistanceMapper getInstance() {
 		return instance;
 	}

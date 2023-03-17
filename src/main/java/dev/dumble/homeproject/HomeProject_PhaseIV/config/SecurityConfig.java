@@ -7,6 +7,7 @@ import dev.dumble.homeproject.HomeProject_PhaseIV.service.impl.SpecialistService
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -39,8 +40,13 @@ public class SecurityConfig {
 		http
 				.csrf().disable()
 				.authorizeHttpRequests()
+
 				.requestMatchers("/api/v1/specialist/register").permitAll()
+				.requestMatchers(HttpMethod.GET, "/api/v1/specialist/confirm-account").permitAll()
+
 				.requestMatchers("/api/v1/client/register").permitAll()
+				.requestMatchers(HttpMethod.GET, "/api/v1/client/confirm-account").permitAll()
+
 				.requestMatchers("/api/v1/manager/create").permitAll()
 
 				.requestMatchers("/api/v1/specialist/**").hasRole("SPECIALIST")

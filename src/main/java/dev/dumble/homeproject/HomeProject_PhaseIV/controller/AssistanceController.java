@@ -1,22 +1,19 @@
 package dev.dumble.homeproject.HomeProject_PhaseIV.controller;
 
 import dev.dumble.homeproject.HomeProject_PhaseIV.dto.AssistanceDTO;
-import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.Assistance;
 import dev.dumble.homeproject.HomeProject_PhaseIV.mapper.AssistanceMapper;
 import dev.dumble.homeproject.HomeProject_PhaseIV.service.impl.AssistanceGroupService;
 import dev.dumble.homeproject.HomeProject_PhaseIV.service.impl.AssistanceService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
-@Slf4j @RestController
+@RestController
 @AllArgsConstructor
 @RequestMapping("/api/v1/assistance")
 public class AssistanceController {
@@ -26,35 +23,31 @@ public class AssistanceController {
 
 	@PostMapping("/create")
 	@PreAuthorize("hasRole('MANAGER')")
-	public ResponseEntity<Assistance> createAssistance(@RequestBody @Valid AssistanceDTO assistanceDTO,
-													   @RequestParam(value = "assistance_group_id") Long groupId) {
+	public void createAssistance(@RequestBody @Valid AssistanceDTO assistanceDTO,
+								 @RequestParam(value = "assistance_group_id") Long groupId) {
 		var assistance = AssistanceMapper.getInstance().map(assistanceDTO);
 		var group = groupService.findById(groupId);
 
 		assistance.setGroup(group);
 		assistanceService.create(assistance);
-
-		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
 	@PostMapping("/{id}/update")
 	@PreAuthorize("hasRole('MANAGER')")
-	public ResponseEntity<Assistance> updateAssistance(@PathVariable(name = "id") Long assistanceId,
-													   @RequestBody @Valid AssistanceDTO assistanceDTO) {
+	public void updateAssistance(@PathVariable(name = "id") Long assistanceId,
+								 @RequestBody @Valid AssistanceDTO assistanceDTO) {
 		var assistance = assistanceService.findById(assistanceId);
 		assistance.setDescription(assistanceDTO.getDescription());
 		assistance.setMinimumPrice(assistanceDTO.getMinimumPrice());
 
 		assistanceService.update(assistance);
-
-		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
 	@GetMapping("/all-assistances")
 	@PreAuthorize("permitAll()")
-	public ResponseEntity<List<Assistance>> findAllAssistancesFromGroup(@RequestParam(value = "assistance_group_id") Long groupId) {
+	public ResponseEntity<Set<AssistanceDTO>> findAllAssistancesFromGroup(@RequestParam(value = "assistance_group_id") Long groupId) {
 		var group = groupService.findById(groupId);
-		var optionalAssistanceList = Optional.of(group.getAssistanceList());
+		var optionalAssistanceList = Optional.of(assistanceService.findAllSerialized(group));
 
 		return ResponseEntity.of(optionalAssistanceList);
 	}

@@ -1,6 +1,7 @@
 package dev.dumble.homeproject.HomeProject_PhaseIV.service.impl;
 
 import dev.dumble.homeproject.HomeProject_PhaseIV.dto.ChangePasswordDTO;
+import dev.dumble.homeproject.HomeProject_PhaseIV.dto.UserDTO;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.Assistance;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.ConfirmationToken;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.users.Specialist;
@@ -11,6 +12,7 @@ import dev.dumble.homeproject.HomeProject_PhaseIV.exception.impl.InvalidEntityEx
 import dev.dumble.homeproject.HomeProject_PhaseIV.exception.impl.NotPermittedException;
 import dev.dumble.homeproject.HomeProject_PhaseIV.filter.SearchSpecification;
 import dev.dumble.homeproject.HomeProject_PhaseIV.filter.request.SearchRequest;
+import dev.dumble.homeproject.HomeProject_PhaseIV.mapper.SpecialistMapper;
 import dev.dumble.homeproject.HomeProject_PhaseIV.repository.ISpecialistRepository;
 import dev.dumble.homeproject.HomeProject_PhaseIV.service.GenericService;
 import org.springframework.mail.SimpleMailMessage;
@@ -18,8 +20,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class SpecialistService extends GenericService<Long, ISpecialistRepository, Specialist> {
@@ -66,6 +69,10 @@ public class SpecialistService extends GenericService<Long, ISpecialistRepositor
 		return super.getRepository().findSpecialistByUsername(username);
 	}
 
+	public Optional<Specialist> findByToken(Long tokenId) {
+		return super.getRepository().findSpecialistByConfirmationToken(tokenId);
+	}
+
 	public void changePassword(Specialist specialist, ChangePasswordDTO passwordDTO) {
 		if (specialist.isNotAccepted())
 			throw new NotPermittedException("The specialist hasn't been accepted yet.");
@@ -106,11 +113,14 @@ public class SpecialistService extends GenericService<Long, ISpecialistRepositor
 		super.update(specialist);
 	}
 
-	public List<Specialist> findAll(SearchRequest request) {
+	public Set<UserDTO> findAll(SearchRequest request) {
 		var specification = new SearchSpecification<Specialist>(request);
 		var pageable = SearchSpecification.getPageable(request.getSize());
 
-		return super.getRepository().findAll(specification, pageable).getContent();
+		var content = super.getRepository().findAll(specification, pageable).getContent();
+		return content.stream()
+				.map(specialist -> SpecialistMapper.getInstance().serialize(specialist))
+				.collect(Collectors.toSet());
 	}
 
 	public Long getRating(Specialist specialist) {

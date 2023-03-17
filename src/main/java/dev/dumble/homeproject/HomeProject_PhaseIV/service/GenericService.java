@@ -18,11 +18,22 @@ public abstract class GenericService<S extends Serializable, R extends JpaReposi
 
 	private R repository;
 
-	public E create(E entity) {
+	public E beforeCreation(E entity) {
 		if (this.exists(entity))
 			throw new DuplicateEntityException();
 
-		return this.getRepository().save(entity);
+		return entity;
+	}
+
+	public E create(E entity) {
+		var creation = this.beforeCreation(entity);
+
+		var savedEntity = this.getRepository().save(creation);
+		return this.afterCreation(savedEntity);
+	}
+
+	public E afterCreation(E entity) {
+		return entity;
 	}
 
 	public void delete(E entity) {

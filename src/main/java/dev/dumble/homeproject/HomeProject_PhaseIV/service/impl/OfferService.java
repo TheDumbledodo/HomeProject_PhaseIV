@@ -1,5 +1,6 @@
 package dev.dumble.homeproject.HomeProject_PhaseIV.service.impl;
 
+import dev.dumble.homeproject.HomeProject_PhaseIV.dto.OfferDTO;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.transactions.Offer;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.transactions.Request;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.users.Client;
@@ -7,13 +8,14 @@ import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.users.Speciali
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.enums.RequestStatus;
 import dev.dumble.homeproject.HomeProject_PhaseIV.exception.impl.*;
 import dev.dumble.homeproject.HomeProject_PhaseIV.filter.enums.RequestSorter;
+import dev.dumble.homeproject.HomeProject_PhaseIV.mapper.OfferMapper;
 import dev.dumble.homeproject.HomeProject_PhaseIV.repository.IOfferRepository;
 import dev.dumble.homeproject.HomeProject_PhaseIV.service.GenericService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class OfferService extends GenericService<Long, IOfferRepository, Offer> {
@@ -69,17 +71,24 @@ public class OfferService extends GenericService<Long, IOfferRepository, Offer> 
 				.isPresent();
 	}
 
-	public Set<Offer> findRequestOffers(Client client, Request request, RequestSorter sorter) {
+	public Set<OfferDTO> findRequestOffers(Client client, Request request, RequestSorter sorter) {
 		if (!client.isVerified())
 			throw new NotPermittedException("The clients account hasn't been verified yet.");
 
 		var requestId = request.getId();
 
-		return switch (sorter) {
-			case SORT_NONE -> new HashSet<>(request.getOffers());
+		var offerSet =  switch (sorter) {
+			case SORT_NONE -> request.getOffers().stream()
+					.map(offer -> OfferMapper.getInstance().serialize(offer))
+					.collect(Collectors.toSet());
+
 			case SORT_PRICE -> super.getRepository().findRequestOffersByPrice(requestId);
 			case SORT_SPECIALIST_RATING -> super.getRepository().findRequestOffersBySpecialistRating(requestId);
 		};
+
+		return offerSet.stream()
+				.map(offer -> OfferMapper.getInstance().serialize((Offer) offer))
+				.collect(Collectors.toSet());
 	}
 
 	public void acceptOffer(Client client, Request request, Offer offer) {

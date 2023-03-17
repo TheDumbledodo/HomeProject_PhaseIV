@@ -12,6 +12,8 @@ public interface OfferMapper {
 
 	Offer map(OfferDTO offerDTO);
 
+	OfferDTO serialize(Offer offer);
+
 	static OfferMapper getInstance() {
 		return instance;
 	}

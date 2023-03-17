@@ -12,6 +12,8 @@ public interface ClientMapper {
 
 	Client map(UserDTO userDTO);
 
+	UserDTO serialize(Client client);
+
 	static ClientMapper getInstance() {
 		return instance;
 	}

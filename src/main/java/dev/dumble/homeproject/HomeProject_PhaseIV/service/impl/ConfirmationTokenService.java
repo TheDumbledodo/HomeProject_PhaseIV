@@ -1,9 +1,6 @@
 package dev.dumble.homeproject.HomeProject_PhaseIV.service.impl;
 
-import dev.dumble.homeproject.HomeProject_PhaseIV.entity.UserEntity;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.ConfirmationToken;
-import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.users.Client;
-import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.users.Specialist;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.enums.SpecialistStatus;
 import dev.dumble.homeproject.HomeProject_PhaseIV.exception.impl.InvalidEntityException;
 import dev.dumble.homeproject.HomeProject_PhaseIV.repository.IConfirmationTokenRepository;
@@ -24,26 +21,38 @@ public class ConfirmationTokenService extends GenericService<Long, IConfirmation
 		this.specialistService = specialistService;
 	}
 
-	public void confirmToken(UserEntity userEntity, String tokenId) {
-		var optionalToken = this.findByConfirmationToken(tokenId);
+	public void confirmToken(String tokenId) {
+		var optionalToken = this.findTokenById(tokenId);
 		if (optionalToken.isEmpty() || optionalToken.get().isUsed())
-			throw new InvalidEntityException("The token you clicked on is already used.");
+			throw new InvalidEntityException("The token you clicked on is already used or doesn't exist.");
 
 		var token = optionalToken.get();
+		var id = token.getId();
 		token.setUsed(true);
 
-		userEntity.setVerified(true);
-		userEntity.setToken(token);
+		var optionalSpecialist = specialistService.findByToken(id);
+		if (optionalSpecialist.isPresent()) {
+			var specialist = optionalSpecialist.get();
+			specialist.setVerified(true);
+			specialist.setToken(token);
 
-		if (userEntity instanceof Specialist specialist) {
 			specialist.setStatus(SpecialistStatus.PENDING_CONFIRMATION);
 			specialistService.update(specialist);
 			return;
 		}
-		clientService.update((Client) userEntity);
+
+		var optionalClient = clientService.findByToken(id);
+		if (optionalClient.isPresent()) {
+			var client = optionalClient.get();
+
+			client.setVerified(true);
+			client.setToken(token);
+
+			clientService.update(client);
+		}
 	}
 
-	public Optional<ConfirmationToken> findByConfirmationToken(String confirmationToken) {
+	public Optional<ConfirmationToken> findTokenById(String confirmationToken) {
 		return super.getRepository().findByConfirmationToken(confirmationToken);
 	}
 }

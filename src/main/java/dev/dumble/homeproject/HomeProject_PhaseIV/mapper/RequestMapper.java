@@ -12,6 +12,8 @@ public interface RequestMapper {
 
 	Request map(RequestDTO requestDTO);
 
+	RequestDTO serialize(Request request);
+
 	static RequestMapper getInstance() {
 		return instance;
 	}

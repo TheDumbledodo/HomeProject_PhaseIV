@@ -1,5 +1,6 @@
 package dev.dumble.homeproject.HomeProject_PhaseIV.service.impl;
 
+import dev.dumble.homeproject.HomeProject_PhaseIV.dto.RequestDTO;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.Assistance;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.transactions.Offer;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.transactions.Request;
@@ -14,6 +15,7 @@ import dev.dumble.homeproject.HomeProject_PhaseIV.exception.impl.InvalidEntityEx
 import dev.dumble.homeproject.HomeProject_PhaseIV.exception.impl.NotPermittedException;
 import dev.dumble.homeproject.HomeProject_PhaseIV.filter.SearchSpecification;
 import dev.dumble.homeproject.HomeProject_PhaseIV.filter.request.SearchRequest;
+import dev.dumble.homeproject.HomeProject_PhaseIV.mapper.RequestMapper;
 import dev.dumble.homeproject.HomeProject_PhaseIV.repository.IRequestRepository;
 import dev.dumble.homeproject.HomeProject_PhaseIV.service.GenericService;
 import org.springframework.stereotype.Service;
@@ -150,27 +152,35 @@ public class RequestService extends GenericService<Long, IRequestRepository, Req
 		specialistService.update(specialist);
 	}
 
-	public Set<Request> findMatchingRequests(Specialist specialist) {
+	public Set<RequestDTO> findMatchingRequests(Specialist specialist) {
 		if (specialist.isNotAccepted())
 			throw new NotPermittedException("The specialist hasn't been accepted yet.");
 
-		return super.getRepository().findMatchingRequests(specialist.getAssistanceList());
+		var matchingRequests = super.getRepository().findMatchingRequests(specialist.getAssistanceList());
+		return matchingRequests.stream()
+				.map(request -> RequestMapper.getInstance().serialize(request))
+				.collect(Collectors.toSet());
 	}
 
-	public Set<Request> findClientRequests(Client client, RequestStatus requestStatus) {
+	public Set<RequestDTO> findClientRequests(Client client, RequestStatus requestStatus) {
 		if (!client.isVerified())
 			throw new NotPermittedException("The clients account hasn't been verified yet.");
 
-		return super.getRepository().findClientRequests(requestStatus, client.getId());
+		var clientRequests = super.getRepository().findClientRequests(requestStatus, client.getId());
+
+		return clientRequests.stream()
+				.map(request -> RequestMapper.getInstance().serialize(request))
+				.collect(Collectors.toSet());
 	}
 
-	public Set<Request> findSpecialistRequests(Specialist specialist, RequestStatus requestStatus) {
+	public Set<RequestDTO> findSpecialistRequests(Specialist specialist, RequestStatus requestStatus) {
 		if (specialist.isNotAccepted())
 			throw new NotPermittedException("The specialist hasn't been accepted yet.");
 
 		return specialist.getOffers().stream()
 				.map(Offer::getRequest)
 				.filter(request -> request.getStatus() == requestStatus)
+				.map(request -> RequestMapper.getInstance().serialize(request))
 				.collect(Collectors.toSet());
 	}
 
@@ -181,25 +191,20 @@ public class RequestService extends GenericService<Long, IRequestRepository, Req
 		return super.getRepository().findAll(specification, pageable).getContent();
 	}
 
-	// todo: this could be improved after phase IV
-	public List<Request> findAllFilteredRequests(SearchRequest searchRequest, Long clientId, Long assistanceId, Long groupId) {
+	public Set<RequestDTO> findAllFilteredRequests(SearchRequest searchRequest, Long clientId, Long specialistId, Long assistanceId, Long groupId) {
 		var requests = this.findAll(searchRequest);
 
 		if (Objects.nonNull(clientId))
-			requests = requests.stream()
-					.filter(request -> request.getClient().getId().equals(clientId))
-					.toList();
-
+			requests = requests.stream().filter(request -> request.getClient().getId().equals(clientId)).toList();
 		if (Objects.nonNull(assistanceId))
-			requests = requests.stream()
-					.filter(request -> request.getAssistance().getId().equals(assistanceId))
-					.toList();
-
+			requests = requests.stream().filter(request -> request.getAssistance().getId().equals(assistanceId)).toList();
 		if (Objects.nonNull(groupId))
-			requests = requests.stream()
-					.filter(request -> request.getAssistance().getGroup().getId().equals(groupId))
-					.toList();
+			requests = requests.stream().filter(request -> request.getAssistance().getGroup().getId().equals(groupId)).toList();
+		if (Objects.nonNull(specialistId))
+			requests = requests.stream().filter(request -> request.getAcceptedOffer().getId().equals(specialistId)).toList();
 
-		return requests;
+		return requests.stream()
+				.map(request -> RequestMapper.getInstance().serialize(request))
+				.collect(Collectors.toSet());
 	}
 }

@@ -1,14 +1,13 @@
 package dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.transactions;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.Transaction;
 import dev.dumble.homeproject.HomeProject_PhaseIV.entity.entities.users.Specialist;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
@@ -18,27 +17,15 @@ import java.time.LocalDateTime;
 @SuperBuilder(setterPrefix = "set")
 public class Offer extends Transaction {
 
-	@JsonIgnore @ManyToOne
-	private Specialist specialist;
+	@ManyToOne private Specialist specialist;
+	@ManyToOne private Request request;
+	@OneToOne private Request acceptedRequest;
 
-	@JsonIgnore @OneToOne
-	private Request acceptedRequest;
-
-	@JsonIgnore @ManyToOne
-	private Request request;
-
-	@NotNull @Column(nullable = false)
 	@Temporal(value = TemporalType.TIMESTAMP)
-	private LocalDateTime creationTime;
+	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+	private LocalDateTime creationTime, startTime;
 
-	@NotNull @Column(nullable = false)
-	@Temporal(value = TemporalType.TIMESTAMP)
-	private LocalDateTime startTime;
-
-	@NotNull @Column(nullable = false)
 	private Integer practicalDays;
-
-	@NotNull @Column(nullable = false)
 	private Long offeredPrice;
 
 	@Override

@@ -9,7 +9,6 @@ import dev.dumble.homeproject.HomeProject_PhaseIV.entity.enums.SpecialistStatus;
 import dev.dumble.homeproject.HomeProject_PhaseIV.exception.impl.ImproperProfilePictureException;
 import dev.dumble.homeproject.HomeProject_PhaseIV.utils.FileUtility;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,30 +24,24 @@ import java.util.Set;
 @SuperBuilder(setterPrefix = "set")
 public class Specialist extends UserEntity {
 
-	@JsonIgnore
 	@ManyToMany(cascade = CascadeType.ALL, mappedBy = "specialistList", fetch = FetchType.EAGER)
 	private Set<Assistance> assistanceList;
 
-	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "specialist", fetch = FetchType.EAGER)
 	private List<Offer> offers;
 
-	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "specialist", fetch = FetchType.EAGER)
 	private List<Review> reviews;
 
 	@Enumerated(value = EnumType.STRING)
 	private SpecialistStatus status;
 
-	@NotNull @JsonIgnore
-	private byte[] profilePicture;
-
-	@JsonIgnore
 	@Column(nullable = false, length = 16000000)
 	public byte[] getData() {
 		return profilePicture;
 	}
 
+	private byte[] profilePicture;
 	private long submittedOffers;
 	private long finishedRequests;
 	private long rating;

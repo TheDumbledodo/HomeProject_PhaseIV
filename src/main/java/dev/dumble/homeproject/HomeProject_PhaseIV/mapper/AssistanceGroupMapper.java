@@ -12,6 +12,8 @@ public interface AssistanceGroupMapper {
 
 	AssistanceGroup map(AssistanceGroupDTO AssistanceGroupDTO);
 
+	AssistanceGroupDTO serialize(AssistanceGroup assistanceGroup);
+
 	static AssistanceGroupMapper getInstance() {
 		return instance;
 	}
